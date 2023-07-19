@@ -46,10 +46,23 @@ cp ./etc/locale.conf /mnt/etc/locale.conf
 
 cp ./etc/vconsole.conf /mnt/etc/vconsole.conf
 
+cp ./etc/hostname /mnt/etc/hostname
 
+cp ./etc/NetworkManager/conf.d/dns-servers.conf /mnt/etc/NetworkManager/conf.d/dns-servers.conf
 
+cp ./etc/systemd/network/20-ethernet.network /mnt/etc/systemd/network/20-ethernet.network
 
+cp ./etc/systemd/network/20-wlan.network /mnt/etc/systemd/network/20-wlan.network
 
+cp ./etc/systemd/network/20-wwan.network /mnt/etc/systemd/network/20-wwan.network
+
+arch-chroot /mnt pacman -S grub efibootmgr
+
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 fsck.mode=skip"/g' /mnt/etc/default/grub
+
+arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+
+arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
 
 
