@@ -42,7 +42,9 @@ sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /mnt/etc/locale.gen
 
 arch-chroot /mnt locale-gen
 
-cp ./etc_locale.conf /mnt/etc/locale.conf
+cp ./etc/locale.conf /mnt/etc/locale.conf
+
+cp ./etc/vconsole.conf /mnt/etc/vconsole.conf
 
 
 
