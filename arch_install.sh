@@ -1,12 +1,21 @@
 #!/bin/bash
 
-for i in $(parted -s /dev/sda print | awk '/^ / {print $1}') ; do
-   parted -s /dev/sda rm $i
-done
+wipe_old_partitions="true"
 
-for i in $(parted -s /dev/sdb print | awk '/^ / {print $1}') ; do
-   parted -s /dev/sdb rm $i
-done
+echo "################# BEGIN installation script for cyclopia #################"
+
+printf "STEP 01..."
+if [ "${wipe_old_partitions}" == "true" ] ; then
+   for i in $(parted -s /dev/sda print | awk '/^ / {print $1}') ; do
+      parted -s /dev/sda rm $i
+   done
+
+   for i in $(parted -s /dev/sdb print | awk '/^ / {print $1}') ; do
+      parted -s /dev/sdb rm $i
+   done
+else
+   echo "skipped"
+fi
 
 parted -s /dev/sda mklabel gpt mkpart '"EFI system partition"' 'fat32' '1MiB' '1GiB'
 
@@ -64,7 +73,7 @@ arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootlo
 
 arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 
-
+echo "################# END installation script for cyclopia #################"
 
 
 
