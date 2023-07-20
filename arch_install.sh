@@ -1,45 +1,139 @@
 #!/bin/bash
 
 wipe_old_partitions="true"
+step_log=/mnt/tmp/step.log
+error_log=/tmp/error.log
 
 echo "################# BEGIN installation script for cyclopia #################"
 
-printf "STEP 01..."
+printf "STEP 01 - Wipe all partitions..."
 if [ "${wipe_old_partitions}" == "true" ] ; then
+   max_cr=0
    for i in $(parted -s /dev/sda print | awk '/^ / {print $1}') ; do
-      parted -s /dev/sda rm $i
+      parted -s /dev/sda rm $i 2> ${error_log}
+      rc=$?
+      if [ $rc -gt ${max_cr} ] ; then
+         echo "KO !"
+         echo "ERROR : $(cat ${error_log})"
+         exit
+      fi
    done
 
    for i in $(parted -s /dev/sdb print | awk '/^ / {print $1}') ; do
-      parted -s /dev/sdb rm $i
+      parted -s /dev/sdb rm $i 2> ${error_log}
+      rc=$?
+      if [ $rc -gt ${max_cr} ] ; then
+         echo "KO !"
+         echo "ERROR : $(cat ${error_log})"
+         exit
+      fi
    done
+   echo "OK"
 else
    echo "skipped"
 fi
 
-parted -s /dev/sda mklabel gpt mkpart '"EFI system partition"' 'fat32' '1MiB' '1GiB'
+printf "STEP 02 - Create all partitions..."
+max_cr=0
+parted -s /dev/sda mklabel gpt mkpart '"EFI system partition"' 'fat32' '1MiB' '1GiB' 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+parted -s /dev/sda set 1 esp on 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+parted -s /dev/sda mkpart "root" xfs 1GiB 100% 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+parted -s /dev/sdb mklabel gpt mkpart "home" xfs 1MiB 100% 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+echo "OK"
 
-parted -s /dev/sda set 1 esp on
+printf "STEP 03 - Create all File systems..."
+max_cr=0
+mkfs.fat -F 32 /dev/sda1 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+mkfs.xfs /dev/sda2 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+mkfs.xfs /dev/sdb1 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+echo "OK"
 
-parted -s /dev/sda mkpart "root" xfs 1GiB 100%
+printf "STEP 04 - Mount all File systems..."
+max_cr=0
+mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+mount /dev/sda2 /mnt 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+mount --mkdir /dev/sdb1 /mnt/home 2> ${error_log}
+rc=$?
+if [ $rc -gt ${max_cr} ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+echo "OK"
 
-parted -s /dev/sdb mklabel gpt mkpart "home" xfs 1MiB 100%
+printf "STEP 05 - Install software packages (might take a long time)..."
+pacstrap -K /mnt base linux linux-firmware iproute2 networkmanager vim 2> ${error_log}
+rc=$?
+if [ $rc -gt 0 ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+echo "OK"
 
-mkfs.fat -F 32 /dev/sda1
-
-mkfs.xfs /dev/sda2
-
-mkfs.xfs /dev/sdb1
-
-mount --mkdir /dev/sda1 /mnt/boot
-
-mount /dev/sda2 /mnt
-
-mount --mkdir /dev/sdb1 /mnt/home
-
-pacstrap -K /mnt base linux linux-firmware iproute2 networkmanager vim
-
+printf "STEP 06 - Generate fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
+rc=$?
+if [ $rc -gt 0 ] ; then
+   echo "KO !"
+   echo "ERROR : $(cat ${error_log})"
+   exit
+fi
+echo "OK"
 
 arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
