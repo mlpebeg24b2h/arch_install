@@ -74,14 +74,14 @@ if [ $rc -gt ${max_cr} ] ; then
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
-mkfs.xfs /dev/sda2 2> ${error_log}
+mkfs.xfs -f /dev/sda2 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
-mkfs.xfs /dev/sdb1 2> ${error_log}
+mkfs.xfs -f /dev/sdb1 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
