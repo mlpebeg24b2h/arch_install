@@ -133,7 +133,7 @@ read toto
 
 printf "STEP 05 - Install software packages (might take a long time)..."
 if [ ${skip_to} -le 5 ] ; then
-   pacstrap -K /mnt base linux linux-firmware iproute2 networkmanager vim 2> ${error_log}
+   pacstrap -K /mnt base linux linux-firmware openssh iproute2 networkmanager vim 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -365,9 +365,16 @@ else
    echo "skipped"
 fi
 
-printf "STEP 17 - Enable NetworkManager systemd unit file   ..."
+printf "STEP 17 - Enable systemd unit files..."
 if [ ${skip_to} -le 17 ] ; then
    arch-chroot /mnt systemctl enable NetworkManager
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   arch-chroot /mnt systemctl enable sshd
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
