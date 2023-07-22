@@ -92,14 +92,14 @@ echo "OK"
 
 printf "STEP 04 - Mount all File systems..."
 max_cr=0
-mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
+mount /dev/sda2 /mnt 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
-mount /dev/sda2 /mnt 2> ${error_log}
+mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
@@ -114,6 +114,9 @@ if [ $rc -gt ${max_cr} ] ; then
    exit
 fi
 echo "OK"
+echo "check FS : "
+df -k | grep mnt
+read toto
 
 printf "STEP 05 - Install software packages (might take a long time)..."
 pacstrap -K /mnt base linux linux-firmware iproute2 networkmanager vim 2> ${error_log}
