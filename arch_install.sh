@@ -367,20 +367,21 @@ fi
 
 printf "STEP 17 - Enable systemd unit files..."
 if [ ${skip_to} -le 17 ] ; then
-   arch-chroot /mnt systemctl enable NetworkManager
+   arch-chroot /mnt systemctl enable NetworkManager 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   arch-chroot /mnt systemctl enable sshd
+   arch-chroot /mnt systemctl enable sshd 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   sed -i 's/.*PermitRootLogin.*/PermitRootLogin yes/g' /mnt/etc/ssh/sshd_config 2> ${error_log}
    echo "OK"
 else
    echo "skipped"
