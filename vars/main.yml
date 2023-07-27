@@ -1,0 +1,13 @@
+---
+
+hypervisor_installation: true
+hypervisor: "hyperv"
+
+pacman_packages:
+- xdg-user-dirs
+- 
+
+user_services:
+- xdg-user-dirs-update
+
+...
