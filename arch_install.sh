@@ -339,7 +339,7 @@ fi
 
 printf "STEP 15 - Create user..."
 if [ ${skip_to} -le 15 ] ; then
-   arch-chroot /mnt useradd -d /home/nicolas -m -s /usr/bin/bash -G wheel nicolas
+   arch-chroot /mnt useradd -d /home/nicolas -m -s /bin/bash -G wheel nicolas
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -382,7 +382,7 @@ if [ ${skip_to} -le 17 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   sed -i 's/.*PermitRootLogin.*/PermitRootLogin yes/g' /mnt/etc/ssh/sshd_config 2> ${error_log}
+   #sed -i 's/.*PermitRootLogin.*/PermitRootLogin yes/g' /mnt/etc/ssh/sshd_config 2> ${error_log}
    echo "OK"
 else
    echo "skipped"
