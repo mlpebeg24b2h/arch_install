@@ -4,7 +4,6 @@ hypervisor_installation: true
 hypervisor: "hyperv"
 
 pacman_packages:
-- xdg-user-dirs
 - fontconfig
 - alacritty
 - jq
@@ -31,6 +30,6 @@ pacman_packages:
 - keepassxc
 
 user_services:
-- xdg-user-dirs-update
+- 
 
 ...

@@ -3,7 +3,7 @@
 wipe_old_partitions="true"
 step_log=/mnt/tmp/step.log
 error_log=/tmp/error.log
-skip_to=14
+skip_to=0
 
 echo "################# BEGIN installation script for cyclopia #################"
 

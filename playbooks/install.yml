@@ -20,9 +20,6 @@
   - name: "[arch_install/install] : install hypervisor client"
     ansible.builtin.include_tasks: "install_{{ hypervisor }}.yml"
     when: hypervisor_installation
-
-  - name: "[arch_install/install] : update XDG user dir configuration"
-    ansible.builtin.command: xdg-user-dirs-update
   
   - name: "[arch_install/install] : enable user services"
     ansible.builtin.systemd_service:
