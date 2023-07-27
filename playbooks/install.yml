@@ -1,0 +1,30 @@
+---
+
+- name: "[arch_install/install] Install Desktop Environment"
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: "[arch_install/install] : update all packages"
+    community.general.pacman:
+      update_cache: true
+      upgrade: true
+
+  - name: "[arch_install/install] : install all required packages"
+    community.general.pacman:
+      name: "{{ pacman_package }}"
+      state: present
+    loop: "{{ pacman_packages }}"
+    loop_control:
+      loop_var: pacman_package
+
+  - name: "[arch_install/install] : update XDG user dir configuration"
+    ansible.builtin.command: xdg-user-dirs-update
+  
+  - name: "[arch_install/install] : enable user services"
+    ansible.builtin.systemd_service:
+      name: "{{ user_service }}"
+      scope: "user"
+      enabled: true
+    loop: "{{ user_services }}"
+    loop_control:
+      loop_var: user_service
