@@ -390,7 +390,7 @@ fi
 
 printf "STEP 18 - Configure sudo..."
 if [ ${skip_to} -le 18 ] ; then
-   sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /etc/sudoers 2> ${error_log}
+   sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /mnt/etc/sudoers 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
