@@ -5,7 +5,30 @@ hypervisor: "hyperv"
 
 pacman_packages:
 - xdg-user-dirs
-- 
+- fontconfig
+- alacritty
+- jq
+- zsh
+- zsh-completions
+- lsd
+- sway
+- swaylock
+- swayidle
+- swaybg
+- bemenu
+- j4-dmenu-desktop
+- waybar
+- otf-font-awesome
+- meson
+- vala
+- libgee
+- firefox
+- filezilla
+- chromium
+- tmux
+- lf
+- neovim
+- keepassxc
 
 user_services:
 - xdg-user-dirs-update

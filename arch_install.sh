@@ -133,7 +133,7 @@ read toto
 
 printf "STEP 05 - Install software packages (might take a long time)..."
 if [ ${skip_to} -le 5 ] ; then
-   pacstrap -K /mnt base linux linux-firmware openssh iproute2 networkmanager vim sudo 2> ${error_log}
+   pacstrap -K /mnt base linux linux-firmware openssh iproute2 networkmanager python vim sudo xdg-user-dirs 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -327,7 +327,7 @@ printf "STEP 14 - Change root passwd..."
 if [ ${skip_to} -le 14 ] ; then
    arch-chroot /mnt passwd root
    rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
+   if [ $rc -gt 0 ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
@@ -341,7 +341,7 @@ printf "STEP 15 - Create user..."
 if [ ${skip_to} -le 15 ] ; then
    arch-chroot /mnt useradd -d /home/nicolas -m -s /usr/bin/bash -G wheel nicolas
    rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
+   if [ $rc -gt 0 ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
@@ -355,7 +355,7 @@ printf "STEP 16 - Change user passwd..."
 if [ ${skip_to} -le 16 ] ; then
    arch-chroot /mnt passwd nicolas
    rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
+   if [ $rc -gt 0 ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
@@ -365,7 +365,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 17 - Enable systemd unit files..."
+printf "STEP 17 - Enable and configure NetworkManager and SSH services..."
+max_cr=0
 if [ ${skip_to} -le 17 ] ; then
    arch-chroot /mnt systemctl enable NetworkManager 2> ${error_log}
    rc=$?
@@ -382,6 +383,49 @@ if [ ${skip_to} -le 17 ] ; then
       exit
    fi
    sed -i 's/.*PermitRootLogin.*/PermitRootLogin yes/g' /mnt/etc/ssh/sshd_config 2> ${error_log}
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+printf "STEP 18 - Configure sudo..."
+if [ ${skip_to} -le 18 ] ; then
+   sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /etc/sudoers 2> ${error_log}
+   rc=$?
+   if [ $rc -gt 0 ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+printf "STEP 19 - Create and configure xdg user dirs..."
+max_cr=0
+if [ ${skip_to} -le 19 ] ; then
+   arch-chroot /mnt su -c 'xdg-user-dirs-update' nicolas 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   arch-chroot /mnt su -c 'systemctl enable xdg-user-dirs-update --user' nicolas 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   arch-chroot /mnt su -c 'mkdir ~/Workspace && mkdir ~/Venv' nicolas 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
    echo "OK"
 else
    echo "skipped"

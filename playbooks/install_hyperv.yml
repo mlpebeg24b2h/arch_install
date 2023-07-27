@@ -1,13 +1,18 @@
 ---
 
-# pacman -S hyperv
-# systemctl start hv_fcopy_daemon && systemctl enable hv_fcopy_daemon
-# systemctl start hv_kvp_daemon && systemctl enable hv_kvp_daemon
-# systemctl start hv_vss_daemon && systemctl enable hv_vss_daemon
-
 - name: "[arch_install/install_hyperv] : install hyper-v package"
   community.general.pacman:
     name: "hyperv"
     state: present
 
-- name: "[arch_install/install_hyperv] : install all services needed"
+- name: "[arch_install/install_hyperv] : start and enable hyper-v services"
+  ansible.builtin.systemd_service:
+    name: "{{ hyperv_service }}"
+    state: started
+    enabled: true
+  loop:
+  - hv_fcopy_daemon
+  - hv_kvp_daemon
+  - hv_vss_daemon
+  loop_control:
+    loop_var: hyperv_service
