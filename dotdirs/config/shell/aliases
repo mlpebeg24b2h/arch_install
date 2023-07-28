@@ -1,0 +1,5 @@
+alias vi="nvim"
+alias vim="nvim"
+alias ls="lsd"
+alias ll="ls -la"
+alias github='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519 && echo "Test auth..." && ssh -T git@github.com'

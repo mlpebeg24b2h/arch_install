@@ -1,0 +1,8 @@
+#
+# ~/.bash_profile
+#
+echo "##### START .bash_profile #####"
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+echo "#####  END  .bash_profile #####"
