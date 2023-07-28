@@ -133,7 +133,7 @@ read toto
 
 printf "STEP 05 - Install software packages (might take a long time)..."
 if [ ${skip_to} -le 5 ] ; then
-   pacstrap -K /mnt base linux linux-firmware openssh iproute2 networkmanager python vim sudo xdg-user-dirs 2> ${error_log}
+   pacstrap -K /mnt base linux linux-firmware openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
