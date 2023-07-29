@@ -1,0 +1,8 @@
+---
+
+- name: "[arch_install/configure] Configure Desktop Environment"
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: "[arch_install/configure] : update all packages"
+    

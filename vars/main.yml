@@ -38,7 +38,45 @@ pacman_packages:
 - neovim
 - keepassxc
 
+source_configuration_files: "/home/nicolas/Workspace/arch_install/dotdirs/config"
+
+configuration_files:
+- software: "bash"
+  files:
+  - src: "bash/bashrc"
+    dest: "/home/nicolas/.bashrc"
+  - src: "bash/bash_profile"
+    dest: "/home/nicolas/.bash_profile"
+  - src: "bash/bash_logout"
+    dest: "/home/nicolas/.bash_logout"
+- software: "alacritty"
+  files:
+  - src: "alacritty"
+    dest: "/home/nicolas/.config/alacritty/alacritty"
+- software: "zsh"
+  files:
+  - src: "zsh/zshrc"
+    dest: "/home/nicolas/.zshrc"
+  - src: "zsh/p10k.zsh"
+    dest: "/home/nicolas/.p10k.zsh"
+- software: "pictures"
+  files:
+  - src: "pictures/locked.jpg"
+    dest: "/home/nicolas/Pictures/locked.jpg"
+  - src: "pictures/smoke.jpg"
+    dest: "/home/nicolas/Pictures/smoke.jpg"
+- software: "sway"
+  files:
+  - src: "sway"
+    dest: "/home/nicolas/.config/sway"
+- software: "shell"
+  files:
+  - src: "shell/aliases"
+    dest: "/home/nicolas/.config/shell/aliases"
+  - src: "shell/variables"
+    dest: "/home/nicolas/.config/shell/variables"
+
 user_services:
-- 
+- ""
 
 ...
