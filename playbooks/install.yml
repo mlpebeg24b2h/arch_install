@@ -21,11 +21,10 @@
     ansible.builtin.include_tasks: "install_{{ hypervisor }}.yml"
     when: hypervisor_installation
   
-  - name: "[arch_install/install] : enable user services"
-    ansible.builtin.systemd_service:
-      name: "{{ user_service }}"
-      scope: "user"
-      enabled: true
-    loop: "{{ user_services }}"
-    loop_control:
-      loop_var: user_service
+  - name: "[arch_install/install] : download fonts"
+    ansible.builtin.uri:
+      url: "{{ font.url }}"
+      dest: "/home/nicolas/Workspace/tmp"
+      remote_src: true
+  
+  - name: "[arch_install/install] : "

@@ -419,7 +419,7 @@ if [ ${skip_to} -le 19 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   arch-chroot /mnt su -c 'mkdir ~/Workspace && mkdir ~/Venv' nicolas 2> ${error_log}
+   arch-chroot /mnt su -c 'mkdir -p ~/Workspace/tmp && mkdir ~/Venv' nicolas 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"

@@ -1,0 +1,13 @@
+---
+
+- name: "[arch_install/prerequisites] Install Desktop Environment prerequisites"
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: "[arch_install/prerequisites] : create all directories"
+    ansible.builtin.file:
+      path: "{{ prerequisites_dir }}"
+      state: directory
+    loop: "{{ prerequisites_dirs }}"
+    loop_control:
+      loop_var: prerequisites_dir

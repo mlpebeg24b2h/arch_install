@@ -3,6 +3,10 @@
 hypervisor_installation: true
 hypervisor: "hyperv"
 
+prerequisites_dirs:
+- ".local"
+- ".local/share/fonts"
+
 pacman_packages:
 - fontconfig
 - alacritty
