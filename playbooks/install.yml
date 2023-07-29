@@ -26,5 +26,21 @@
       url: "{{ font.url }}"
       dest: "/home/nicolas/Workspace/tmp"
       remote_src: true
+    loop: "{{ fonts }}"
+    loop_control:
+      loop_var: font
   
-  - name: "[arch_install/install] : "
+  - name: "[arch_install/install] : unarchive fonts"
+    ansible.builtin.unarchive:
+      src: "/home/nicolas/Workspace/tmp/{{ font.archive }}"
+      dest: /home/nicolas/.local/share/fonts
+      remote_src: true
+    loop: "{{ fonts }}"
+    loop_control:
+      loop_var: font
+
+  - name: "[arch_install/install] : create fonts cache"
+    ansible.builtin.command: fc-cache
+
+  - name: "[arch_install/install] : match available fonts"
+    ansible.builtin.command: fc-match

@@ -7,6 +7,11 @@ prerequisites_dirs:
 - ".local"
 - ".local/share/fonts"
 
+fonts:
+- name: "ComicShannsMono"
+  url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/ComicShannsMono.tar.xz"
+  archive: "ComicShannsMono.tar.xz"
+
 pacman_packages:
 - fontconfig
 - alacritty
