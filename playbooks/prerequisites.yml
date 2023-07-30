@@ -6,6 +6,9 @@
   vars_files:
   - vars/main.yml
   tasks:
+  - name: "Ansible | List all known variables and facts"
+  debug:
+    var: hostvars[localhost]
   - name: "[arch_install/prerequisites] : create all directories"
     ansible.builtin.file:
       path: "{{ prerequisites_dir }}"
