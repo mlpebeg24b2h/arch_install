@@ -4,6 +4,7 @@
   community.general.pacman:
     name: "hyperv"
     state: present
+  become: true
 
 - name: "[arch_install/install_hyperv] : start and enable hyper-v services"
   ansible.builtin.systemd_service:
@@ -16,3 +17,4 @@
   - hv_vss_daemon
   loop_control:
     loop_var: hyperv_service
+  become: true
