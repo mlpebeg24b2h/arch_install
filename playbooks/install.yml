@@ -3,6 +3,8 @@
 - name: "[arch_install/install] Install Desktop Environment"
   hosts: localhost
   connection: local
+  vars_files:
+  - ../vars/main.yml
   tasks:
   - name: "[arch_install/install] : update all packages"
     community.general.pacman:
