@@ -28,7 +28,7 @@
   - name: "[arch_install/install] : download fonts"
     ansible.builtin.uri:
       url: "{{ font.url }}"
-      dest: "/home/nicolas/Workspace/tmp"
+      dest: "/home/nicolas/Workspace/tmp/{{ font.archive }}"
       remote_src: true
     loop: "{{ fonts }}"
     loop_control:
