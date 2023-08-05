@@ -7,6 +7,7 @@ prerequisites_dirs:
 - "/home/nicolas/.local"
 - "/home/nicolas/.local/share/fonts"
 - "/home/nicolas/.config/shell"
+- "/home/nicolas/.config/systemd"
 
 fonts:
 - name: "ComicShannsMono"
@@ -76,8 +77,14 @@ configuration_files:
     dest: "/home/nicolas/.config/shell/aliases"
   - src: "{{ source_configuration_files }}/shell/variables"
     dest: "/home/nicolas/.config/shell/variables"
+- software: "systemd"
+  files:
+  - src: "{{ source_configuration_files }}/systemd/user"
+    dest: "/home/nicolas/.config/systemd/user"
 
 user_services:
-- ""
+- "sway"
+- "swayidle"
+- "waybar"
 
 ...
