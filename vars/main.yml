@@ -81,6 +81,8 @@ configuration_files:
   files:
   - src: "{{ source_configuration_files }}/systemd/user/sway.service"
     dest: "/home/nicolas/.config/systemd/user/sway.service"
+  - src: "{{ source_configuration_files }}/systemd/user/sway-session.target"
+    dest: "/home/nicolas/.config/systemd/user/sway-session.target"
   - src: "{{ source_configuration_files }}/systemd/user/swayidle.service"
     dest: "/home/nicolas/.config/systemd/user/swayidle.service"
   - src: "{{ source_configuration_files }}/systemd/user/waybar.service"
