@@ -8,6 +8,6 @@
   tasks:
   - name: "[arch_install/configure] : test sub-elements"
     debug:
-      msg: '"{{ item.0.name}}" : "{{ item.1.src }}"  -> "{{ item.1.dest }}"'
+      msg: '"{{ item.0.software}}" : "{{ item.1.src }}"  -> "{{ item.1.dest }}"'
     loop: "{{ configuration_files | subelements('files') }}"
     
