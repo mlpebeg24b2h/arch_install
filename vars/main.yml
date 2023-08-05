@@ -79,8 +79,12 @@ configuration_files:
     dest: "/home/nicolas/.config/shell/variables"
 - software: "systemd"
   files:
-  - src: "{{ source_configuration_files }}/systemd/user"
-    dest: "/home/nicolas/.config/systemd/user"
+  - src: "{{ source_configuration_files }}/systemd/user/sway.service"
+    dest: "/home/nicolas/.config/systemd/user/sway.service"
+  - src: "{{ source_configuration_files }}/systemd/user/swayidle.service"
+    dest: "/home/nicolas/.config/systemd/user/swayidle.service"
+  - src: "{{ source_configuration_files }}/systemd/user/waybar.service"
+    dest: "/home/nicolas/.config/systemd/user/waybar.service"
 
 user_services:
 - "sway"
