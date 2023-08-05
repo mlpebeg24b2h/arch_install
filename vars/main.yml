@@ -52,7 +52,7 @@ configuration_files:
 - software: "alacritty"
   files:
   - src: "{{ source_configuration_files }}/alacritty"
-    dest: "/home/nicolas/.config/alacritty/alacritty"
+    dest: "/home/nicolas/.config/alacritty"
 - software: "zsh"
   files:
   - src: "{{ source_configuration_files }}/zsh/zshrc"
