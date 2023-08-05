@@ -3,6 +3,8 @@
 - name: "[arch_install/configure] Configure Desktop Environment"
   hosts: localhost
   connection: local
+  vars_files:
+  - ../vars/main.yml
   tasks:
   - name: "[arch_install/configure] : test sub-elements"
     debug:
