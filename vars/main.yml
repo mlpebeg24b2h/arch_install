@@ -82,9 +82,9 @@ configuration_files:
 - software: "binaries"
   files:
   - src: "{{ source_configuration_files }}/scripts/bemenu-run.sh"
-    dest: "/home/nicolas/.config/bin/scripts/bemenu-run.sh"
+    dest: "/home/nicolas/.local/bin/scripts/bemenu-run.sh"
   - src: "{{ source_configuration_files }}/scripts/lock.sh"
-    dest: "/home/nicolas/.config/bin/scripts/lock.sh"
+    dest: "/home/nicolas/.local/bin/scripts/lock.sh"
 - software: "systemd"
   files:
   - src: "{{ source_configuration_files }}/systemd/user/sway.service"
