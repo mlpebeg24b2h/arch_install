@@ -86,6 +86,10 @@ configuration_files:
     dest: "/home/nicolas/.local/bin/scripts/bemenu-run.sh"
   - src: "{{ source_dotdirs_files }}/scripts/lock.sh"
     dest: "/home/nicolas/.local/bin/scripts/lock.sh"
+  - src: "{{ source_dotdirs_files }}/scripts/toggle-program.sh"
+    dest: "/home/nicolas/.local/bin/scripts/toggle-program.sh"
+  - src: "{{ source_dotdirs_files }}/scripts/remontoire"
+    dest: "/home/nicolas/.local/bin/remontoire"
 - software: "systemd"
   files:
   - src: "{{ source_dotdirs_files }}/config/systemd/user/sway.service"
