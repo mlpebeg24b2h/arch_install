@@ -6,6 +6,8 @@ hypervisor: "hyperv"
 prerequisites_dirs:
 - "/home/nicolas/.local"
 - "/home/nicolas/.local/share/fonts"
+- "/home/nicolas/.local/bin"
+- "/home/nicolas/.local/bin/scripts"
 - "/home/nicolas/.config/shell"
 - "/home/nicolas/.config/systemd"
 
@@ -77,6 +79,12 @@ configuration_files:
     dest: "/home/nicolas/.config/shell/aliases"
   - src: "{{ source_configuration_files }}/shell/variables"
     dest: "/home/nicolas/.config/shell/variables"
+- software: "binaries"
+  files:
+  - src: "{{ source_configuration_files }}/scripts/bemenu-run.sh"
+    dest: "/home/nicolas/.config/bin/scripts/bemenu-run.sh"
+  - src: "{{ source_configuration_files }}/scripts/lock.sh"
+    dest: "/home/nicolas/.config/bin/scripts/lock.sh"
 - software: "systemd"
   files:
   - src: "{{ source_configuration_files }}/systemd/user/sway.service"

@@ -9,5 +9,8 @@ echo "##### START .bashrc #####"
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
+source ~/.config/shell/aliases
+
+export PATH=$PATH:/home/nicolas/.local/bin/scripts
 
 echo "#####  END  .bashrc #####"
