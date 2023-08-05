@@ -6,6 +6,7 @@ hypervisor: "hyperv"
 prerequisites_dirs:
 - "/home/nicolas/.local"
 - "/home/nicolas/.local/share/fonts"
+- "/home/nicolas/.config/shell"
 
 fonts:
 - name: "ComicShannsMono"
