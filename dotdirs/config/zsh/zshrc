@@ -21,7 +21,7 @@ source ~/.config/powerlevel10k/powerlevel10k.zsh-theme
 
 # Extend PATH
 typeset -U path PATH
-path=(~/.local/bin/scripts ~/.local/bin/sway $path)
+path=(~/.local/bin ~/.local/bin/scripts ~/.local/bin/sway $path)
 export PATH
 
 # launch sway
