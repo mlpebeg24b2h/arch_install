@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Version=1.0
-Name=03-htop
+Name=Utilities->htop
 GenericName=Process Viewer
 GenericName[fr]=Visualiseur de processus
 Comment=Show System Processes

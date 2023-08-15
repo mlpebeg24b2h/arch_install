@@ -42,6 +42,7 @@ pacman_packages:
 - lf
 - neovim
 - keepassxc
+- htop
 
 source_dotdirs_files: "/home/nicolas/Workspace/arch_install/dotdirs"
 

@@ -18,13 +18,19 @@
       state: link
     loop: "{{ configuration_files | subelements('files') }}"
 
+  - name: "[arch_install/configure] : backup system-wide desktop entries"
+    ansible.builtin.copy:
+      src: /usr/share/applications/
+      dest: /home/nicolas/Workspace/backup/system-wide-desktop-entries
+      remote_src: yes
+      force: true
+
   - name: "[arch_install/configure] : remove default application entries"
     ansible.builtin.file:
       path: "{{ application_dir }}"
       state: absent
     loop:
     - /usr/share/applications/
-    - /usr/local/share/applications/
     loop_control:
       loop_var: application_dir
     become: true
