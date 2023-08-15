@@ -24,6 +24,7 @@
       dest: /home/nicolas/Workspace/backup/system-wide-desktop-entries
       remote_src: yes
       force: true
+    ignore_errors: true
 
   - name: "[arch_install/configure] : remove default application entries"
     ansible.builtin.file:
