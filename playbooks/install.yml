@@ -21,11 +21,17 @@
       loop_var: pacman_package
     become: true
 
+  - name: "[arch_install/install] : Check remontoire git path"
+    ansible.builtin.stat:
+      path: "/home/nicolas/Workspace/tmp/remontoire"
+    register: remontoire_git_path
+
   - name: "[arch_install/install] : Clone remontoire"
     ansible.builtin.git:
       repo: "https://github.com/mlpebeg24b2h/remontoire.git"
       clone: true
       dest: "/home/nicolas/Workspace/tmp/remontoire"
+    when: (not remontoire_git_path.stat.exists)
 
   - name: "[arch_install/install] : install remontoire package - part 1"
     ansible.builtin.shell: meson build
