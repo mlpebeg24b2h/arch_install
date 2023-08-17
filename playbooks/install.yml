@@ -27,20 +27,22 @@
       clone: true
       dest: "/home/nicolas/Workspace/tmp"
 
-  - name: "[arch_install/install] : install remontoire package"
+  - name: "[arch_install/install] : install remontoire package - part 1"
+    ansible.builtin.shell: meson build
+    args:
+      chdir: "/home/nicolas/Workspace/tmp/remontoire"
+      executable: /bin/bash
+
+  - name: "[arch_install/install] : install remontoire package - part 2"
+    ansible.builtin.shell: ninja install 
+    args:
+      chdir: "/home/nicolas/Workspace/tmp/remontoire/build"
+      executable: /bin/bash
+    become: true
 
   - name: "[arch_install/install] : install hypervisor client"
     ansible.builtin.include_tasks: "install_{{ hypervisor }}.yml"
     when: hypervisor_installation
-  
-# cd ~/Workspace/tmp
-# git clone https://github.com/regolith-linux/remontoire.git
-# cd remontoire
-# sudo pacman -S meson vala libgee
-# meson build
-# cd build
-# sudo ninja install
-# sudo cp src/remontoire /usr/bin/remontoire
 
   - name: "[arch_install/install] : download fonts"
     ansible.builtin.uri:
