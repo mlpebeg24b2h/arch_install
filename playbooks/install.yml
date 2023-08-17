@@ -26,6 +26,11 @@
       path: "/home/nicolas/Workspace/tmp/remontoire"
     register: remontoire_git_path
 
+  - name: "[arch_install/install] : Check remontoire build path"
+    ansible.builtin.stat:
+      path: "/home/nicolas/Workspace/tmp/remontoire/build"
+    register: remontoire_build_path
+
   - name: "[arch_install/install] : Clone remontoire"
     ansible.builtin.git:
       repo: "https://github.com/mlpebeg24b2h/remontoire.git"
@@ -38,6 +43,7 @@
     args:
       chdir: "/home/nicolas/Workspace/tmp/remontoire"
       executable: /bin/bash
+    when: (not remontoire_git_path.stat.exists)
 
   - name: "[arch_install/install] : install remontoire package - part 2"
     ansible.builtin.shell: ninja install 
@@ -45,6 +51,7 @@
       chdir: "/home/nicolas/Workspace/tmp/remontoire/build"
       executable: /bin/bash
     become: true
+    when: (not remontoire_build_path.stat.exists)
 
   - name: "[arch_install/install] : install hypervisor client"
     ansible.builtin.include_tasks: "install_{{ hypervisor }}.yml"

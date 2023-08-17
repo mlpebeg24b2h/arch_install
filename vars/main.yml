@@ -28,7 +28,7 @@ pacman_packages:
 - swaylock
 - swayidle
 - swaybg
-- bemenu
+- bemenu-wayland
 - j4-dmenu-desktop
 - waybar
 - otf-font-awesome
