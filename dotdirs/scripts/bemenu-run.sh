@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#set -x
 
 ## Generic bemenu script. Will be run from other scripts to make sure, bemenu always looks the same
 

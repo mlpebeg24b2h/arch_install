@@ -80,3 +80,12 @@
 
   - name: "[arch_install/install] : match available fonts"
     ansible.builtin.command: fc-match
+
+  - name: "[arch_install/install] : remove fonts zip download"
+    ansible.builtin.file:
+      path: "/home/nicolas/Workspace/tmp/{{ font.archive }}"
+      state: absent
+    loop: "{{ fonts }}"
+    loop_control:
+      loop_var: font
+
