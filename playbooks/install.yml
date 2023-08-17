@@ -21,10 +21,27 @@
       loop_var: pacman_package
     become: true
 
+  - name: "[arch_install/install] : Clone remontoire"
+    ansible.builtin.git:
+      repo: "https://github.com/mlpebeg24b2h/remontoire.git"
+      clone: true
+      dest: "/home/nicolas/Workspace/tmp"
+
+  - name: "[arch_install/install] : install remontoire package"
+
   - name: "[arch_install/install] : install hypervisor client"
     ansible.builtin.include_tasks: "install_{{ hypervisor }}.yml"
     when: hypervisor_installation
   
+# cd ~/Workspace/tmp
+# git clone https://github.com/regolith-linux/remontoire.git
+# cd remontoire
+# sudo pacman -S meson vala libgee
+# meson build
+# cd build
+# sudo ninja install
+# sudo cp src/remontoire /usr/bin/remontoire
+
   - name: "[arch_install/install] : download fonts"
     ansible.builtin.uri:
       url: "{{ font.url }}"
