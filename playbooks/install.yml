@@ -25,7 +25,7 @@
     ansible.builtin.git:
       repo: "https://github.com/mlpebeg24b2h/remontoire.git"
       clone: true
-      dest: "/home/nicolas/Workspace/tmp"
+      dest: "/home/nicolas/Workspace/tmp/remontoire"
 
   - name: "[arch_install/install] : install remontoire package - part 1"
     ansible.builtin.shell: meson build
