@@ -6,4 +6,4 @@ Icon=utilities-terminal
 Terminal=true
 Exec=lf
 Categories=ConsoleOnly;System;FileTools;FileManager
-MimeType=inode/directory;
+MimeType=inode/directory

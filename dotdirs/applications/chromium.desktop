@@ -8,7 +8,7 @@ GenericName[fr]=Navigateur Web
 # Gnome and KDE 3 uses Comment.
 Comment=Access the Internet
 Comment[fr]=Accéder à Internet
-Exec=/usr/bin/chromium %U
+Exec=/usr/bin/chromium %U --ozone-platform=wayland
 StartupNotify=true
 Terminal=false
 Icon=chromium
@@ -20,9 +20,9 @@ Actions=new-window;new-private-window;
 [Desktop Action new-window]
 Name=New Window
 Name[fr]=Nouvelle fenêtre
-Exec=/usr/bin/chromium
+Exec=/usr/bin/chromium --ozone-platform=wayland
 
 [Desktop Action new-private-window]
 Name=New Incognito Window
 Name[fr]=Nouvelle fenêtre de navigation privée
-Exec=/usr/bin/chromium --incognito
+Exec=/usr/bin/chromium --incognito --ozone-platform=wayland
