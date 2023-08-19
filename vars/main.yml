@@ -4,6 +4,7 @@ hypervisor_installation: true
 hypervisor: "hyperv"
 
 prerequisites_dirs:
+- "/home/nicolas/.ansible"
 - "/home/nicolas/.local"
 - "/home/nicolas/.local/share"
 - "/home/nicolas/.local/share/fonts"
@@ -43,6 +44,12 @@ pacman_packages:
 - neovim
 - keepassxc
 - htop
+# for yay
+- fakeroot
+- make
+
+aur_packages:
+- autotiling
 
 source_dotdirs_files: "/home/nicolas/Workspace/arch_install/dotdirs"
 

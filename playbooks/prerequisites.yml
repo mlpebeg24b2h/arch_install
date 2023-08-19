@@ -15,3 +15,27 @@
       loop_var: prerequisites_dir
   - name: "[arch_install/prerequisites] : add powerlevel10k binaries"
     ansible.builtin.command: git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/nicolas/.config/powerlevel10k
+    ignore_errors: true
+  - name: "[arch_install/prerequisites] : create user for aur builds"
+    ansible.builtin.user:
+      name: aur_builder
+    become: true
+  - name: "[arch_install/prerequisites] : allow user aur_builder to use pacman"
+    ansible.builtin.lineinfile:
+      path: /etc/sudoers.d/aur_builder
+      state: present
+      line: "aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman"
+      validate: /usr/sbin/visudo -cf %s
+      create: true
+      owner: root
+      group: root
+      mode: 0600
+    become: true
+  - name: "[arch_install/prerequisites] : install AUR plugin module"
+    ansible.builtin.copy:
+      src: "../plugins"
+      dest: /home/nicolas/.ansible
+      remote_src: yes
+      force: true
+    ignore_errors: true
+

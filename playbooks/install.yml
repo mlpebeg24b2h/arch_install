@@ -20,6 +20,27 @@
     loop_control:
       loop_var: pacman_package
     become: true
+    vars:
+      mitogen_task_isolation: fork
+
+  - name: "[arch_install/install] : installing yay from aur"
+    aur:
+      name:
+        - yay
+      state: present
+      use: makepkg
+
+  - name: "[arch_install/install] : install AUR packages"
+    aur:
+      name: "{{ aur_package }}"
+      state: present
+      use: yay
+    loop: "{{ aur_packages }}"
+    loop_control:
+      loop_var: aur_package
+    become_user: aur_builder
+    vars:
+      mitogen_task_isolation: fork
 
   - name: "[arch_install/install] : Check remontoire git path"
     ansible.builtin.stat:
