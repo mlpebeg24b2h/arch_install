@@ -55,14 +55,14 @@ if [ ${skip_to} -le 2 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   parted -s /dev/sda mkpart "root" xfs 1GiB 100% 2> ${error_log}
+   parted -s /dev/sda mkpart "root" xfs '1GiB' '10GiB' 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   parted -s /dev/sdb mklabel gpt mkpart "home" xfs 1MiB 100% 2> ${error_log}
+   parted -s /dev/sda mkpart "home" xfs '11GiB' 100% 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -74,8 +74,44 @@ else
    echo "skipped"
 fi
 
-printf "STEP 03 - Create all File systems..."
+printf "STEP 03 - Crypt all File systems..."
 if [ ${skip_to} -le 3 ] ; then
+   max_cr=0
+   cryptsetup -y -v luksFormat /dev/sda2 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   cryptsetup open /dev/sda2 root 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   cryptsetup -y -v luksFormat /dev/sda3 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   cryptsetup open /dev/sda3 home 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+printf "STEP 04 - Create all File systems..."
+if [ ${skip_to} -le 4 ] ; then
    max_cr=0
    mkfs.fat -F 32 /dev/sda1 2> ${error_log}
    rc=$?
@@ -84,14 +120,14 @@ if [ ${skip_to} -le 3 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   mkfs.xfs -f /dev/sda2 2> ${error_log}
+   mkfs.xfs /dev/mapper/root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   mkfs.xfs -f /dev/sdb1 2> ${error_log}
+   mkfs.xfs /dev/mapper/home 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -103,9 +139,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 04 - Mount all File systems..."
+printf "STEP 05 - Mount all File systems..."
 max_cr=0
-mount /dev/sda2 /mnt 2> ${error_log}
+mount /dev/mapper/root /mnt 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
@@ -119,7 +155,7 @@ if [ $rc -gt ${max_cr} ] ; then
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
-mount --mkdir /dev/sdb1 /mnt/home 2> ${error_log}
+mount --mkdir /dev/mapper/home /mnt/home 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
@@ -131,8 +167,8 @@ echo "check FS : "
 df -k | grep mnt
 read toto
 
-printf "STEP 05 - Install software packages (might take a long time)..."
-if [ ${skip_to} -le 5 ] ; then
+printf "STEP 06 - Install software packages (might take a long time)..."
+if [ ${skip_to} -le 6 ] ; then
    pacstrap -K /mnt base linux linux-firmware openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -145,8 +181,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 06 - Generate fstab..."
-if [ ${skip_to} -le 6 ] ; then
+printf "STEP 07 - Generate fstab..."
+if [ ${skip_to} -le 7 ] ; then
    genfstab -U /mnt >> /mnt/etc/fstab 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -159,8 +195,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 07 - Generate local time zone..."
-if [ ${skip_to} -le 7 ] ; then
+printf "STEP 08 - Generate local time zone..."
+if [ ${skip_to} -le 8 ] ; then
    arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -173,8 +209,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 08 - Set the system time..."
-if [ ${skip_to} -le 8 ] ; then
+printf "STEP 09 - Set the system time..."
+if [ ${skip_to} -le 9 ] ; then
    arch-chroot /mnt hwclock --systohc 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -187,8 +223,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 09 - Generate locales..."
-if [ ${skip_to} -le 9 ] ; then
+printf "STEP 10 - Generate locales..."
+if [ ${skip_to} -le 10 ] ; then
    max_cr=0
    sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/g' /mnt/etc/locale.gen 2> ${error_log}
    rc=$?
@@ -223,8 +259,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 10 - Generate keyboard mappings..."
-if [ ${skip_to} -le 10 ] ; then
+printf "STEP 11 - Generate keyboard mappings..."
+if [ ${skip_to} -le 11 ] ; then
    cp ./etc/vconsole.conf /mnt/etc/vconsole.conf 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -237,8 +273,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 11 - Generate hostname..."
-if [ ${skip_to} -le 11 ] ; then
+printf "STEP 12 - Generate hostname..."
+if [ ${skip_to} -le 12 ] ; then
    cp ./etc/hostname /mnt/etc/hostname 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -251,8 +287,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 12 - Configure Networking..."
-if [ ${skip_to} -le 12 ] ; then
+printf "STEP 13 - Configure Networking..."
+if [ ${skip_to} -le 13 ] ; then
    max_cr=0
    cp ./etc/NetworkManager/conf.d/dns-servers.conf /mnt/etc/NetworkManager/conf.d/dns-servers.conf 2> ${error_log}
    rc=$?
@@ -287,9 +323,23 @@ else
    echo "skipped"
 fi
 
-printf "STEP 13 - Configure GRUB..."
-if [ ${skip_to} -le 13 ] ; then
+printf "STEP 14 - Configure GRUB..."
+if [ ${skip_to} -le 14 ] ; then
    max_cr=0
+   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /etc/mkinitcpio.conf 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   mkinitcpio -P
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi   
    arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -297,7 +347,9 @@ if [ ${skip_to} -le 13 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="\(.*\)"/GRUB_CMDLINE_LINUX_DEFAULT="\1 fsck.mode=skip"/g' /mnt/etc/default/grub 2> ${error_log}
+   UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
+   UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
+   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=/dev/mapper/root\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -318,13 +370,20 @@ if [ ${skip_to} -le 13 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "home         ${UUID_HOME}        none    timeout=180" >> /etc/crypttab
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
    echo "OK"
 else
    echo "skipped"
 fi
 
-printf "STEP 14 - Change root passwd..."
-if [ ${skip_to} -le 14 ] ; then
+printf "STEP 15 - Change root passwd..."
+if [ ${skip_to} -le 15 ] ; then
    arch-chroot /mnt passwd root
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -337,8 +396,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 15 - Create user..."
-if [ ${skip_to} -le 15 ] ; then
+printf "STEP 16 - Create user..."
+if [ ${skip_to} -le 16 ] ; then
    arch-chroot /mnt useradd -d /home/nicolas -m -s /bin/bash -G wheel nicolas
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -351,8 +410,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 16 - Change user passwd..."
-if [ ${skip_to} -le 16 ] ; then
+printf "STEP 17 - Change user passwd..."
+if [ ${skip_to} -le 17 ] ; then
    arch-chroot /mnt passwd nicolas
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -365,9 +424,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 17 - Enable and configure NetworkManager and SSH services..."
+printf "STEP 18 - Enable and configure NetworkManager and SSH services..."
 max_cr=0
-if [ ${skip_to} -le 17 ] ; then
+if [ ${skip_to} -le 18 ] ; then
    arch-chroot /mnt systemctl enable NetworkManager 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -388,8 +447,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 18 - Configure sudo..."
-if [ ${skip_to} -le 18 ] ; then
+printf "STEP 19 - Configure sudo..."
+if [ ${skip_to} -le 19 ] ; then
    sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /mnt/etc/sudoers 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -402,9 +461,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 19 - Create and configure xdg user dirs..."
+printf "STEP 20 - Create and configure xdg user dirs..."
 max_cr=0
-if [ ${skip_to} -le 19 ] ; then
+if [ ${skip_to} -le 20 ] ; then
    arch-chroot /mnt su -c 'xdg-user-dirs-update' nicolas 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
