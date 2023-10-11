@@ -326,14 +326,14 @@ fi
 printf "STEP 14 - Configure GRUB..."
 if [ ${skip_to} -le 14 ] ; then
    max_cr=0
-   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /etc/mkinitcpio.conf 2> ${error_log}
+   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   mkinitcpio -P
+   arch-chroot /mnt mkinitcpio -P
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -370,7 +370,7 @@ if [ ${skip_to} -le 14 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "home         ${UUID_HOME}        none    timeout=180" >> /etc/crypttab
+   echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
