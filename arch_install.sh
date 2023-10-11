@@ -359,6 +359,7 @@ if [ ${skip_to} -le 15 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   max_cr=1
    arch-chroot /mnt mkinitcpio -P
    rc=$?
    echo "==> launch mkinitcpio reconfiguration"
@@ -367,6 +368,7 @@ if [ ${skip_to} -le 15 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   max_cr=0
    arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
    rc=$?
    echo "==> install grub binaries"
