@@ -129,7 +129,7 @@ printf "STEP 05 - Create all File systems..."
 if [ ${skip_to} -le 5 ] ; then
    max_cr=0
    echo "==> creation of EFI FS"
-   mkfs.fat -F 32 /dev/sda1 -f 2> ${error_log}
+   mkfs.fat -F 32 /dev/sda1 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
