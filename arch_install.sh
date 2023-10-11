@@ -351,25 +351,25 @@ fi
 printf "STEP 15 - Configure GRUB..."
 if [ ${skip_to} -le 15 ] ; then
    max_cr=0
-   echo "==> configure mkinitcpio file"
    sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
+   echo "==> configure mkinitcpio file"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "==> launch mkinitcpio reconfiguration"
    arch-chroot /mnt mkinitcpio -P
    rc=$?
+   echo "==> launch mkinitcpio reconfiguration"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "==> install grub binaries"
    arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
    rc=$?
+   echo "==> install grub binaries"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
@@ -377,33 +377,33 @@ if [ ${skip_to} -le 15 ] ; then
    fi
    UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
    UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
-   echo "==> configure GRUB file"
    sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=/dev/mapper/root\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
+   echo "==> configure GRUB file"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "==> install GRUB on system"
    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB 2> ${error_log}
    rc=$?
+   echo "==> install GRUB on system"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "==> configure GRUB on system"
    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg 2> ${error_log}
    rc=$?
+   echo "==> configure GRUB on system"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "==> configure crypttab file"
    echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
    rc=$?
+   echo "==> configure crypttab file"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
