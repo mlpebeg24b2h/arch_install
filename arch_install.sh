@@ -379,7 +379,7 @@ if [ ${skip_to} -le 15 ] ; then
    fi
    UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
    UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
-   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=/dev/mapper/root\"/g" /mnt/etc/default/grub 2> ${error_log}
+   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=\/dev\/mapper\/root\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
    echo "==> configure GRUB file"
    if [ $rc -gt ${max_cr} ] ; then
