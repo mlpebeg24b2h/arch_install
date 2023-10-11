@@ -65,7 +65,7 @@ if [ ${skip_to} -le 2 ] ; then
       exit
    fi
    echo "==> creation of home partition"
-   parted -s /dev/sda mkpart "home" xfs '11GiB' 100% 2> ${error_log}
+   parted -s /dev/sda mkpart "home" xfs '10GiB' 100% 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
