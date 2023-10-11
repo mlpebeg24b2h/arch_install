@@ -129,7 +129,7 @@ printf "STEP 05 - Create all File systems..."
 if [ ${skip_to} -le 5 ] ; then
    max_cr=0
    echo "==> creation of EFI FS"
-   mkfs.fat -F 32 /dev/sda1 2> ${error_log}
+   mkfs.fat -F 32 /dev/sda1 -f 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -137,7 +137,7 @@ if [ ${skip_to} -le 5 ] ; then
       exit
    fi
    echo "==> creation of root FS"
-   mkfs.xfs /dev/mapper/root 2> ${error_log}
+   mkfs.xfs /dev/mapper/root -f 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -145,7 +145,7 @@ if [ ${skip_to} -le 5 ] ; then
       exit
    fi
    echo "==> creation of home FS"
-   mkfs.xfs /dev/mapper/home 2> ${error_log}
+   mkfs.xfs /dev/mapper/home -f 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
