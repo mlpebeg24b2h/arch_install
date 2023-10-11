@@ -41,6 +41,7 @@ fi
 printf "STEP 02 - Create all partitions..."
 if [ ${skip_to} -le 2 ] ; then
    max_cr=0
+   echo "==> creation of EFI partition"
    parted -s /dev/sda mklabel gpt mkpart '"EFI system partition"' 'fat32' '1MiB' '1GiB' 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -55,6 +56,7 @@ if [ ${skip_to} -le 2 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> creation of root partition"
    parted -s /dev/sda mkpart "root" xfs '1GiB' '10GiB' 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -62,6 +64,7 @@ if [ ${skip_to} -le 2 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> creation of home partition"
    parted -s /dev/sda mkpart "home" xfs '11GiB' 100% 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -77,6 +80,7 @@ fi
 printf "STEP 03 - Crypt all File systems..."
 if [ ${skip_to} -le 3 ] ; then
    max_cr=0
+   echo "==> crypt root partition"
    cryptsetup -y -v luksFormat /dev/sda2 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -84,6 +88,7 @@ if [ ${skip_to} -le 3 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> open root crypted partition"
    cryptsetup open /dev/sda2 root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -91,6 +96,7 @@ if [ ${skip_to} -le 3 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> crypt home partition"
    cryptsetup -y -v luksFormat /dev/sda3 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -98,6 +104,7 @@ if [ ${skip_to} -le 3 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> open home crypted partition"
    cryptsetup open /dev/sda3 home 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -113,6 +120,7 @@ fi
 printf "STEP 04 - Create all File systems..."
 if [ ${skip_to} -le 4 ] ; then
    max_cr=0
+   echo "==> creation of EFI FS"
    mkfs.fat -F 32 /dev/sda1 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -120,6 +128,7 @@ if [ ${skip_to} -le 4 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> creation of root FS"
    mkfs.xfs /dev/mapper/root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -127,6 +136,7 @@ if [ ${skip_to} -le 4 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> creation of home FS"
    mkfs.xfs /dev/mapper/home 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -141,6 +151,7 @@ fi
 
 printf "STEP 05 - Mount all File systems..."
 max_cr=0
+echo "==> mount root partition"
 mount /dev/mapper/root /mnt 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
@@ -148,6 +159,7 @@ if [ $rc -gt ${max_cr} ] ; then
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
+echo "==> mount EFI partition"
 mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
@@ -155,6 +167,7 @@ if [ $rc -gt ${max_cr} ] ; then
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
+echo "==> mount home partition"
 mount --mkdir /dev/mapper/home /mnt/home 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
@@ -290,6 +303,7 @@ fi
 printf "STEP 13 - Configure Networking..."
 if [ ${skip_to} -le 13 ] ; then
    max_cr=0
+   echo "==> configure DNS servers"
    cp ./etc/NetworkManager/conf.d/dns-servers.conf /mnt/etc/NetworkManager/conf.d/dns-servers.conf 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -297,6 +311,7 @@ if [ ${skip_to} -le 13 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> configure ethernet network"
    cp ./etc/systemd/network/20-ethernet.network /mnt/etc/systemd/network/20-ethernet.network 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -304,6 +319,7 @@ if [ ${skip_to} -le 13 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> configure wlan network"
    cp ./etc/systemd/network/20-wlan.network /mnt/etc/systemd/network/20-wlan.network 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -311,6 +327,7 @@ if [ ${skip_to} -le 13 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> configure wwan network"
    cp ./etc/systemd/network/20-wwan.network /mnt/etc/systemd/network/20-wwan.network 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -326,6 +343,7 @@ fi
 printf "STEP 14 - Configure GRUB..."
 if [ ${skip_to} -le 14 ] ; then
    max_cr=0
+   echo "==> configure mkinitcpio file"
    sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -333,13 +351,15 @@ if [ ${skip_to} -le 14 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> launch mkinitcpio reconfiguration"
    arch-chroot /mnt mkinitcpio -P
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
-   fi   
+   fi
+   echo "==> install grub binaries"
    arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -349,6 +369,7 @@ if [ ${skip_to} -le 14 ] ; then
    fi
    UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
    UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
+   echo "==> configure GRUB file"
    sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=/dev/mapper/root\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -356,6 +377,7 @@ if [ ${skip_to} -le 14 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> install GRUB on system"
    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -363,6 +385,7 @@ if [ ${skip_to} -le 14 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> configure GRUB on system"
    arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -370,6 +393,7 @@ if [ ${skip_to} -le 14 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+   echo "==> configure crypttab file"
    echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
