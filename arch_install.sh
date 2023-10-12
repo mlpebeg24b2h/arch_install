@@ -21,15 +21,15 @@ if [ ${skip_to} -le 1 ] ; then
          fi
       done
    
-      for i in $(parted -s /dev/sdb print | awk '/^ / {print $1}') ; do
-         parted -s /dev/sdb rm $i 2> ${error_log}
-         rc=$?
-         if [ $rc -gt ${max_cr} ] ; then
-            echo "KO !"
-            echo "ERROR : $(cat ${error_log})"
-            exit
-         fi
-      done
+      #for i in $(parted -s /dev/sdb print | awk '/^ / {print $1}') ; do
+      #   parted -s /dev/sdb rm $i 2> ${error_log}
+      #   rc=$?
+      #   if [ $rc -gt ${max_cr} ] ; then
+      #      echo "KO !"
+      #      echo "ERROR : $(cat ${error_log})"
+      #      exit
+      #   fi
+      #done
       echo "OK"
    else
       echo "skipped"
@@ -49,13 +49,13 @@ if [ ${skip_to} -le 2 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   parted -s /dev/sda set 1 esp on 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
+   #parted -s /dev/sda set 1 esp on 2> ${error_log}
+   #rc=$?
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   exit
+   #fi
    echo "==> creation of root partition"
    parted -s /dev/sda mkpart "root" xfs '1GiB' '10GiB' 2> ${error_log}
    rc=$?
@@ -160,23 +160,23 @@ fi
 printf "STEP 06 - Mount all File systems..."
 max_cr=0
 echo "==> mount root partition"
-mount /dev/mapper/root /mnt 2> ${error_log}
+mount /dev/sda1 /mnt 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
-echo "==> mount EFI partition"
-mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
-rc=$?
-if [ $rc -gt ${max_cr} ] ; then
-   echo "KO !"
-   echo "ERROR : $(cat ${error_log})"
-   exit
-fi
+#echo "==> mount EFI partition"
+#mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
+#rc=$?
+#if [ $rc -gt ${max_cr} ] ; then
+#   echo "KO !"
+#   echo "ERROR : $(cat ${error_log})"
+#   exit
+#fi
 echo "==> mount home partition"
-mount --mkdir /dev/mapper/home /mnt/home 2> ${error_log}
+mount --mkdir /dev/sda2 /mnt/home 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
@@ -351,7 +351,7 @@ fi
 printf "STEP 15 - Configure GRUB..."
 if [ ${skip_to} -le 15 ] ; then
    max_cr=0
-   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
    echo "==> configure mkinitcpio file"
    if [ $rc -gt ${max_cr} ] ; then
@@ -369,7 +369,7 @@ if [ ${skip_to} -le 15 ] ; then
       exit
    fi
    max_cr=0
-   arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
+   arch-chroot /mnt pacman -S grub 2> ${error_log}
    rc=$?
    echo "==> install grub binaries"
    if [ $rc -gt ${max_cr} ] ; then
@@ -377,9 +377,9 @@ if [ ${skip_to} -le 15 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
-   UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
-   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=\/dev\/mapper\/root\"/g" /mnt/etc/default/grub 2> ${error_log}
+   #UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
+   #UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
+   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
    echo "==> configure GRUB file"
    if [ $rc -gt ${max_cr} ] ; then
@@ -387,7 +387,7 @@ if [ ${skip_to} -le 15 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB 2> ${error_log}
+   arch-chroot /mnt grub-install --target=i386-pc /dev/sda 2> ${error_log}
    rc=$?
    echo "==> install GRUB on system"
    if [ $rc -gt ${max_cr} ] ; then
@@ -403,14 +403,14 @@ if [ ${skip_to} -le 15 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
-   rc=$?
-   echo "==> configure crypttab file"
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
+   #echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
+   #rc=$?
+   #echo "==> configure crypttab file"
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   exit
+   #fi
    echo "OK"
 else
    echo "skipped"
