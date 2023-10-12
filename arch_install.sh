@@ -40,6 +40,8 @@ fi
 
 printf "STEP 02 - Create all partitions..."
 if [ ${skip_to} -le 2 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    echo "==> creation of EFI partition"
    parted -s /dev/sda mklabel gpt mkpart '"EFI system partition"' 'fat32' '1MiB' '1GiB' 2> ${error_log}
@@ -57,7 +59,7 @@ if [ ${skip_to} -le 2 ] ; then
    #   exit
    #fi
    echo "==> creation of root partition"
-   parted -s /dev/sda mkpart "root" xfs '1GiB' '10GiB' 2> ${error_log}
+   parted -s /dev/sda mkpart "root" xfs '1GiB' '101GiB' 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -65,7 +67,7 @@ if [ ${skip_to} -le 2 ] ; then
       exit
    fi
    echo "==> creation of home partition"
-   parted -s /dev/sda mkpart "home" xfs '10GiB' 100% 2> ${error_log}
+   parted -s /dev/sda mkpart "home" xfs '101GiB' 100% 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -79,6 +81,8 @@ fi
 
 printf "STEP 03 - Crypt all partitions..."
 if [ ${skip_to} -le 3 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    echo "==> crypt root partition"
    cryptsetup -y -v luksFormat /dev/sda2 2> ${error_log}
@@ -103,6 +107,8 @@ fi
 
 printf "STEP 04 - Open all crypted partitions..."
 if [ ${skip_to} -le 4 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    echo "==> open root crypted partition"
    cryptsetup open /dev/sda2 root 2> ${error_log}
@@ -127,6 +133,8 @@ fi
 
 printf "STEP 05 - Create all File systems..."
 if [ ${skip_to} -le 5 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    echo "==> creation of EFI FS"
    mkfs.fat -F 32 /dev/sda1 2> ${error_log}
@@ -158,6 +166,8 @@ else
 fi
 
 printf "STEP 06 - Mount all File systems..."
+echo "Press enter when ready"
+read input
 max_cr=0
 echo "==> mount root partition"
 mount /dev/sda1 /mnt 2> ${error_log}
@@ -186,10 +196,13 @@ fi
 echo "OK"
 echo "check FS : "
 df -k | grep mnt
-read toto
+echo "Press enter when ready"
+read input
 
 printf "STEP 07 - Install software packages (might take a long time)..."
 if [ ${skip_to} -le 7 ] ; then
+   echo "Press enter when ready"
+   read input
    pacstrap -K /mnt base base-devel linux linux-firmware openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -204,6 +217,8 @@ fi
 
 printf "STEP 08 - Generate fstab..."
 if [ ${skip_to} -le 8 ] ; then
+   echo "Press enter when ready"
+   read input
    genfstab -U /mnt >> /mnt/etc/fstab 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -218,6 +233,8 @@ fi
 
 printf "STEP 09 - Generate local time zone..."
 if [ ${skip_to} -le 9 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -232,6 +249,8 @@ fi
 
 printf "STEP 10 - Set the system time..."
 if [ ${skip_to} -le 10 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt hwclock --systohc 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -246,6 +265,8 @@ fi
 
 printf "STEP 11 - Generate locales..."
 if [ ${skip_to} -le 11 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    sed -i 's/#fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/g' /mnt/etc/locale.gen 2> ${error_log}
    rc=$?
@@ -282,6 +303,8 @@ fi
 
 printf "STEP 12 - Generate keyboard mappings..."
 if [ ${skip_to} -le 12 ] ; then
+   echo "Press enter when ready"
+   read input
    cp ./etc/vconsole.conf /mnt/etc/vconsole.conf 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -296,6 +319,8 @@ fi
 
 printf "STEP 13 - Generate hostname..."
 if [ ${skip_to} -le 13 ] ; then
+   echo "Press enter when ready"
+   read input
    cp ./etc/hostname /mnt/etc/hostname 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -310,6 +335,8 @@ fi
 
 printf "STEP 14 - Configure Networking..."
 if [ ${skip_to} -le 14 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    echo "==> configure DNS servers"
    cp ./etc/NetworkManager/conf.d/dns-servers.conf /mnt/etc/NetworkManager/conf.d/dns-servers.conf 2> ${error_log}
@@ -350,6 +377,8 @@ fi
 
 printf "STEP 15 - Configure GRUB..."
 if [ ${skip_to} -le 15 ] ; then
+   echo "Press enter when ready"
+   read input
    max_cr=0
    sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
@@ -418,6 +447,8 @@ fi
 
 printf "STEP 16 - Change root passwd..."
 if [ ${skip_to} -le 16 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt passwd root
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -432,6 +463,8 @@ fi
 
 printf "STEP 17 - Create user..."
 if [ ${skip_to} -le 17 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt useradd -d /home/nicolas -m -s /bin/bash -G wheel nicolas
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -444,8 +477,10 @@ else
    echo "skipped"
 fi
 
-printf "STEP 18 - Change user passwd..."
+printf "STEP 18 - Change user passwd for nicolas..."
 if [ ${skip_to} -le 18 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt passwd nicolas
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -461,6 +496,8 @@ fi
 printf "STEP 19 - Enable and configure NetworkManager and SSH services..."
 max_cr=0
 if [ ${skip_to} -le 19 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt systemctl enable NetworkManager 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
@@ -483,6 +520,8 @@ fi
 
 printf "STEP 20 - Configure sudo..."
 if [ ${skip_to} -le 20 ] ; then
+   echo "Press enter when ready"
+   read input
    sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /mnt/etc/sudoers 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
@@ -498,6 +537,8 @@ fi
 printf "STEP 21 - Create and configure xdg user dirs..."
 max_cr=0
 if [ ${skip_to} -le 21 ] ; then
+   echo "Press enter when ready"
+   read input
    arch-chroot /mnt su -c 'xdg-user-dirs-update' nicolas 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
