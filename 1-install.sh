@@ -107,6 +107,7 @@ packagesPacman=(
     "xautolock"
     "blueman"
     "nautilus"
+    "htop"
 );
 
 packagesYay=(
