@@ -10,7 +10,7 @@ fi
 
 # Created by newuser for 5.9
 source ~/.config/shell/aliases
-source ~/.config/shell/variables
+#source ~/.config/shell/variables
 source ~/.config/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -21,14 +21,9 @@ source ~/.config/powerlevel10k/powerlevel10k.zsh-theme
 
 # Extend PATH
 typeset -U path PATH
-path=(~/.local/bin ~/.local/bin/scripts ~/.local/bin/sway $path)
+path=(~/.local/bin ~/.local/bin/scripts $path)
 export PATH
 
-# launch sway
-#if [ -z $SSH_TTY ] ; then
-#   exec sway
-#fi
-#
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 echo "#####  END  .zshrc #####"

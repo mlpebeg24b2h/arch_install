@@ -6,13 +6,12 @@
 #    \_/\_/ \__,_|_|_| .__/ \__,_| .__/ \___|_|    
 #                    |_|         |_|               
 #  
-# by Stephan Raabe (2023) 
 # ----------------------------------------------------- 
 
 # ----------------------------------------------------- 
 # Select wallpaper
 # ----------------------------------------------------- 
-selected=$(ls -1 ~/wallpaper | grep "jpg" | rofi -dmenu -config ~/dotfiles/rofi/config-wallpaper.rasi -p "Wallpapers")
+selected=$(ls -1 ~/wallpaper | grep "jpg" | rofi -dmenu -config ~/Workspace/git/github/arch_install/dotfiles/rofi/config-wallpaper.rasi -p "Wallpapers")
 
 if [ "$selected" ]; then
 
@@ -44,7 +43,7 @@ if [ "$selected" ]; then
         --transition-duration=0.7 \
         --transition-pos "$( hyprctl cursorpos )"
 
-    ~/dotfiles/waybar/launch.sh
+    ~/Workspace/git/github/arch_install/dotfiles/waybar/launch.sh
     sleep 1
 
     # ----------------------------------------------------- 

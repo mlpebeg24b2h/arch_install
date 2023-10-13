@@ -5,7 +5,6 @@
 #  ___) | || (_| | |  | |_    \ V  V / (_| | |_| | |_) | (_| | |    
 # |____/ \__\__,_|_|   \__|    \_/\_/ \__,_|\__, |_.__/ \__,_|_|    
 #                                           |___/                   
-# by Stephan Raabe (2023) 
 # ----------------------------------------------------- 
 
 # ----------------------------------------------------- 
@@ -18,7 +17,7 @@ killall waybar
 # ----------------------------------------------------- 
 if [[ $USER = "raabe" ]]
 then
-    waybar -c ~/dotfiles/waybar/myconfig & -s ~/dotfiles/waybar/style.css  
+    waybar -c ~/Workspace/git/github/arch_install/dotfiles/waybar/myconfig & -s ~/Workspace/git/github/arch_install/dotfiles/waybar/style.css  
 else
     waybar &
 fi 

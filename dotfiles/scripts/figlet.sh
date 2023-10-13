@@ -6,7 +6,6 @@
 # |_|   |_|\__, |_|\___|\__|
 #          |___/            
 #
-# by Stephan Raabe (2023)
 # -----------------------------------------------------
 # Script to create ascii font based header on user input
 # and copy the result to the clipboard
@@ -15,7 +14,6 @@
 read -p "Enter the text for ascii encoding: " mytext
 figlet "$mytext" > ~/figlet.txt
 echo "" >> ~/figlet.txt
-echo "by Stephan Raabe (2023)" >> ~/figlet.txt
 echo "-----------------------------------------------------" >> ~/figlet.txt
 sed -i 's/^/# /; s/$/ /' ~/figlet.txt
 lines=$( cat ~/figlet.txt )

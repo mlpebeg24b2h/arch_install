@@ -4,15 +4,17 @@
 #  _| |_) | (_| \__ \ | | | | | (__ 
 # (_)_.__/ \__,_|___/_| |_|_|  \___|
 # 
-# by Stephan Raabe (2023)
 # -----------------------------------------------------
 # ~/.bashrc
 # -----------------------------------------------------
 
+echo "##### START .bashrc #####"
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 PS1='[\u@\h \W]\$ '
 
+source ~/.config/shell/aliases
+export PATH=$PATH:/home/nicolas/.local/bin/scripts
 # -----------------------------------------------------
 # ALIASES
 # -----------------------------------------------------
@@ -115,3 +117,4 @@ cat ~/.cache/wal/sequences
 # -----------------------------------------------------
 echo ""
 pfetch
+echo "#####  END  .bashrc #####"

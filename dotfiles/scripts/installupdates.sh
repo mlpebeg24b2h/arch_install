@@ -5,13 +5,12 @@
 #  | || | | \__ \ || (_| | | | | |_| | |_) | (_| | (_| | ||  __/\__ \ 
 # |___|_| |_|___/\__\__,_|_|_|  \___/| .__/ \__,_|\__,_|\__\___||___/ 
 #                                    |_|                              
-# by Stephan Raabe (2023) 
 # ----------------------------------------------------- 
 # Required: yay trizen timeshift btrfs-grub
 # ----------------------------------------------------- 
 
 sleep 1
-source ~/dotfiles/scripts/library.sh
+source ~/Workspace/git/github/arch_install/dotfiles/scripts/library.sh
 clear
 
 # ------------------------------------------------------

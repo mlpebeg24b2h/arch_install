@@ -1,0 +1,5 @@
+#
+# ~/.bash_logout
+#
+echo "##### START .bash_logout #####"
+echo "#####  END  .bash_logout #####"

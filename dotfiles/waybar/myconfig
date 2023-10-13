@@ -5,7 +5,6 @@
 //    \_/\_/ \__,_|\__, |_.__/ \__,_|_|    
 //                 |___/                   
 //  
-// by Stephan Raabe (2023) 
 // ----------------------------------------------------- 
 //
 {
@@ -27,7 +26,7 @@
     "spacing": 0,
 
     // Load Modules
-    "include": ["~/dotfiles/waybar/modules.json"],
+    "include": ["~/Workspace/git/github/arch_install/dotfiles/waybar/modules.json"],
 
     // Modules Left
     "modules-left": [

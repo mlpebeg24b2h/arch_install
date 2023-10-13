@@ -6,7 +6,6 @@
 #   |_| |_| |_|\___|_| |_| |_|\___| |____/  \_/\_/      \_/\_/      \_/\_/    
 #                                                                             
 #  
-# by Stephan Raabe (2023) 
 # ----------------------------------------------------- 
 
 # ----------------------------------------------------- 
@@ -39,7 +38,7 @@ swww img $wallpaper \
     --transition-duration=0.7 \
     --transition-pos "$( hyprctl cursorpos )"
 
-~/dotfiles/waybar/launch.sh
+~/Workspace/git/github/arch_install/dotfiles/waybar/launch.sh
 sleep 1
 
 # ----------------------------------------------------- 
