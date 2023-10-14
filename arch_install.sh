@@ -566,7 +566,7 @@ else
 fi
 printf "STEP 22 - Copy current dir to arch linux..."
 max_cr=0
-if [ ${skip_to} -le 21 ] ; then
+if [ ${skip_to} -le 22 ] ; then
    echo "Press enter when ready"
    read input
    cp -r /tmp/arch_install /mnt/home/nicolas/Workspace/git/github && chown -R nicolas /mnt/home/nicolas/Workspace/git/github/arch_install 2> ${error_log}
@@ -587,7 +587,7 @@ if [ ${skip_to} -le 21 ] ; then
 fi
 printf "STEP 23 - Umount everything..."
 max_cr=0
-if [ ${skip_to} -le 21 ] ; then
+if [ ${skip_to} -le 23 ] ; then
    echo "Press enter when ready"
    read input
    umount -f /mnt/home && umount -f /mnt/boot && umount -f /mnt 2> ${error_log}
