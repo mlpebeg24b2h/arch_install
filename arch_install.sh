@@ -553,7 +553,7 @@ if [ ${skip_to} -le 21 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   arch-chroot /mnt su -c 'mkdir -p ~/Workspace/tmp && mkdir -p ~/Workspace/backup/system-wide-desktop-entries && mkdir ~/Venv' nicolas 2> ${error_log}
+   arch-chroot /mnt su -c 'mkdir -p ~/Workspace/tmp && mkdir -p ~/Workspace/backup/system-wide-desktop-entries && mkdir ~/Venv && mkdir -p ~/Workspace/git/github' nicolas 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -563,6 +563,34 @@ if [ ${skip_to} -le 21 ] ; then
    echo "OK"
 else
    echo "skipped"
+fi
+printf "STEP 22 - Copy current dir to arch linux..."
+max_cr=0
+if [ ${skip_to} -le 21 ] ; then
+   echo "Press enter when ready"
+   read input
+   cp -r /tmp/arch_install /mnt/home/nicolas/Workspace/git/github && chown -R nicolas /mnt/home/nicolas/Workspace/git/github/arch_install 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
+fi
+printf "STEP 23 - Umount everything..."
+max_cr=0
+if [ ${skip_to} -le 21 ] ; then
+   echo "Press enter when ready"
+   read input
+   umount -f /mnt/home && umount -f /mnt/boot && umount -f /mnt 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
 fi
 
 echo "################# END installation script for cyclopia #################"
