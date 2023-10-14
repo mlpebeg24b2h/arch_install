@@ -12,7 +12,9 @@
 # ------------------------------------------------------
 # Confirm Start
 # ------------------------------------------------------
-source ${WORKSPACE_GIT}/arch_install/dotfiles/scripts/library.sh
+WORKSPACE_GIT=~/Workspace/git/github
+WORKSPACE_DOTFILES=${WORKSPACE_GIT}/arch_install/
+source ${WORKSPACE_DOTFILES}/dotfiles/scripts/library.sh
 clear
 echo "  ___ _____ ___ _     _____  "
 echo " / _ \_   _|_ _| |   | ____| "     
