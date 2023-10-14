@@ -9,13 +9,13 @@
 # ----------------------------------------------------- 
 
 # Select wallpaper
-selected=$(ls -1 ~/wallpaper | grep "jpg" | rofi -dmenu -config ~/Workspace/git/github/arch_install/dotfiles/rofi/config-wallpaper.rasi -p "Wallpapers")
+selected=$(ls -1 ~/Workspace/wallpapers | grep "jpg" | rofi -dmenu -config ~/Workspace/git/github/arch_install/dotfiles/rofi/config-wallpaper.rasi -p "Wallpapers")
 
 if [ "$selected" ]; then
 
     echo "Changing theme..."
     # Update wallpaper with pywal
-    wal -q -i ~/wallpaper/$selected
+    wal -q -i ~/Workspace/wallpapers/$selected
 
     # Wait for 1 sec
     sleep 1
@@ -26,7 +26,7 @@ if [ "$selected" ]; then
     # Get new theme
     source "$HOME/.cache/wal/colors.sh"
 
-    newwall=$(echo $wallpaper | sed "s|$HOME/wallpaper/||g")
+    newwall=$(echo $wallpaper | sed "s|$HOME/Workspace/wallpapers/||g")
 
     # ----------------------------------------------------- 
     # Copy selected wallpaper into .cache folder
