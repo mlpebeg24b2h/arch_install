@@ -143,6 +143,9 @@ clear
 echo ""
 echo "-> Install aliases"
 
+if [ ! -d ~/.config/shell ]; then
+   mkdir ~/.config/shell
+fi
 _installSymLink aliases ~/.config/shell/aliases ${WORKSPACE_GIT}/arch_install/dotfiles/shell/aliases ~/.config/shell/aliases
 
 echo ""
