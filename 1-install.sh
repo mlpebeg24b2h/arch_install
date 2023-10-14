@@ -109,6 +109,7 @@ packagesPacman=(
     "blueman"
     "nautilus"
     "htop"
+    "zsh"
 );
 
 packagesYay=(
@@ -137,12 +138,25 @@ fi
 clear
 
 # ------------------------------------------------------
-# Install .bashrc
+# Install shell files
 # ------------------------------------------------------
 echo ""
-echo "-> Install .bashrc"
+echo "-> Install aliases"
+
+_installSymLink aliases ~/.config/shell/aliases ${WORKSPACE_GIT}/arch_install/dotfiles/shell/aliases ~/.config/shell/aliases
+
+echo ""
+echo "-> Install bash files"
 
 _installSymLink .bashrc ~/.bashrc ${WORKSPACE_GIT}/arch_install/dotfiles/shell/bash/.bashrc ~/.bashrc
+_installSymLink .bash_logout ~/.bash_logout ${WORKSPACE_GIT}/arch_install/dotfiles/shell/bash/bash_logout ~/.bash_logout
+_installSymLink .bash_profile ~/.bash_profile ${WORKSPACE_GIT}/arch_install/dotfiles/shell/bash/bash_profile ~/.bash_profile
+
+echo ""
+echo "-> Install zsh files"
+
+_installSymLink .zshrc ~/.zshrc ${WORKSPACE_GIT}/arch_install/dotfiles/shell/zsh/zshrc ~/.zshrc
+_installSymLink .p10k.zsh ~/.p10k.zsh ${WORKSPACE_GIT}/arch_install/dotfiles/shell/zsh/p10k.zsh ~/.p10k.zsh
 
 # ------------------------------------------------------
 # Install custom issue (login prompt)
