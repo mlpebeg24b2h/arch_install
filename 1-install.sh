@@ -188,35 +188,14 @@ done
 # ------------------------------------------------------
 echo ""
 echo "-> Install wallpapers"
-while true; do
-    read -p "Do you want to clone the wallpapers? (Yy/Nn): " yn
-    case $yn in
-        [Yy]* )
-            if [ -d ~/Workspace/wallpapers/ ]; then
-                echo "wallpaper folder already exists."
-            else
-                mkdir ~/Workspace/wallpapers/
-                cp -r ${WORKSPACE_GIT}/wallpapers/* ~/Workspace/wallpapers/
-                echo "wallpapers installed."
-            fi
-        break;;
-        [Nn]* ) 
-            if [ -d ~/Workspace/wallpapers/ ]; then
-                echo "wallpapers folder already exists."
-            else
-                mkdir ~/Workspace/wallpapers
-            fi
-        break;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+_installSymLink wallpapers ~/Workspace/wallpapers ${WORKSPACE_GIT}/arch_install/dotfiles/wallpapers ~/Workspace/wallpapers
 
 # ------------------------------------------------------
 # Init pywal
 # ------------------------------------------------------
 echo ""
 echo "-> Init pywal"
-wal -i ${WORKSPACE_GIT}/wallpapers/default.jpg
+wal -i ${WORKSPACE_GIT}/arch_install/dotfiles/default.jpg
 echo "pywal initiated."
 
 # ------------------------------------------------------
