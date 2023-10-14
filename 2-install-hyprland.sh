@@ -13,7 +13,7 @@
 # ------------------------------------------------------
 # Confirm Start
 # ------------------------------------------------------
-source $(dirname "$0")/scripts/library.sh
+source ${WORKSPACE_GIT}/arch_install/dotfiles/scripts/library.sh
 clear
 echo "  _   _                  _                 _  "
 echo " | | | |_   _ _ __  _ __| | __ _ _ __   __| | "
