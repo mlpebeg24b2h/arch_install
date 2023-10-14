@@ -1,0 +1,453 @@
+--> .
+--> ./.git
+--> ./.git/info
+--> ./.git/info/exclude
+--> ./.git/hooks
+--> ./.git/hooks/update.sample
+--> ./.git/hooks/sendemail-validate.sample
+--> ./.git/hooks/push-to-checkout.sample
+--> ./.git/hooks/prepare-commit-msg.sample
+--> ./.git/hooks/pre-receive.sample
+--> ./.git/hooks/pre-rebase.sample
+--> ./.git/hooks/pre-push.sample
+--> ./.git/hooks/pre-merge-commit.sample
+--> ./.git/hooks/pre-commit.sample
+--> ./.git/hooks/pre-applypatch.sample
+--> ./.git/hooks/post-update.sample
+--> ./.git/hooks/fsmonitor-watchman.sample
+--> ./.git/hooks/commit-msg.sample
+--> ./.git/hooks/applypatch-msg.sample
+--> ./.git/description
+--> ./.git/branches
+--> ./.git/refs
+--> ./.git/refs/heads
+--> ./.git/refs/heads/arch_calculon
+--> ./.git/refs/tags
+--> ./.git/refs/remotes
+--> ./.git/refs/remotes/origin
+--> ./.git/refs/remotes/origin/HEAD
+--> ./.git/refs/remotes/origin/arch_calculon
+--> ./.git/refs/stash
+--> ./.git/objects
+--> ./.git/objects/pack
+--> ./.git/objects/pack/pack-333c6e0f89e2291ae9d29887047e2b3badb30b2b.pack
+--> ./.git/objects/pack/pack-333c6e0f89e2291ae9d29887047e2b3badb30b2b.idx
+--> ./.git/objects/pack/pack-333c6e0f89e2291ae9d29887047e2b3badb30b2b.rev
+--> ./.git/objects/info
+--> ./.git/objects/a0
+--> ./.git/objects/a0/6b2981f306278696dedbfa03844f12755c8a52
+--> ./.git/objects/aa
+--> ./.git/objects/aa/994468601996aa67356d4adebe21a98d4f6283
+--> ./.git/objects/aa/813315d29b6c1bbd1a1085095cbe50a099d348
+--> ./.git/objects/87
+--> ./.git/objects/87/30b5923bb815252cef1604f0bdbead2218df88
+--> ./.git/objects/42
+--> ./.git/objects/42/459330a26c42db844cfc4ff9878cc2573afc31
+--> ./.git/objects/36
+--> ./.git/objects/36/af18dd5cb044ceebafbcf32444aa4d8d20b88d
+--> ./.git/objects/05
+--> ./.git/objects/05/5d9bf26dbdcbe0f26e45bab026d18593dfae84
+--> ./.git/objects/a7
+--> ./.git/objects/a7/f8c565c2e371116a4be8105faa4cc20a6db5a5
+--> ./.git/objects/ff
+--> ./.git/objects/ff/94a9736936c51b17a33452e7df46b7bb48fdbf
+--> ./.git/objects/8f
+--> ./.git/objects/8f/761dece671b6cb093ca7c5473846501d4aa169
+--> ./.git/objects/0d
+--> ./.git/objects/0d/bc366d7325eab1115eef2e87c0f5f0408e84ee
+--> ./.git/objects/c9
+--> ./.git/objects/c9/8418a2a89b4116a6ba77a97b13faee28487493
+--> ./.git/objects/44
+--> ./.git/objects/44/5a93c4e6cde0c28c11b7a10839475c80da69c4
+--> ./.git/objects/2e
+--> ./.git/objects/2e/e3702ee01e78f33ae877cfb981611f82ed6409
+--> ./.git/objects/1c
+--> ./.git/objects/1c/7ef859276e8659c3e7ba549b91ad8bf9924686
+--> ./.git/objects/6f
+--> ./.git/objects/6f/f128f6f8e890b8d52d573c80dae41d7c2855e0
+--> ./.git/objects/e1
+--> ./.git/objects/e1/ad6b4ca42403839b51c2bfacccd87154370f8f
+--> ./.git/objects/f0
+--> ./.git/objects/f0/92c599522a6852915a19b725cf744e1f3f4332
+--> ./.git/objects/75
+--> ./.git/objects/75/9df9a7091c8a52c76916652fbbf2ce7f80bede
+--> ./.git/objects/0e
+--> ./.git/objects/0e/ac5fefd9f63bbf9bbb4be880e816c8c7d7ef75
+--> ./.git/objects/7f
+--> ./.git/objects/7f/e48dea2f1de9091875b7b96d11a947ff69689a
+--> ./.git/objects/ca
+--> ./.git/objects/ca/299046f02eb4e7d6b814c9c6e98c1ead08f9eb
+--> ./.git/objects/ee
+--> ./.git/objects/ee/9f84edc7f8b50aeefaab4716ae990103154d82
+--> ./.git/objects/ee/9c1b1e8231aee248cb6138a4f3a46a324062a7
+--> ./.git/objects/b9
+--> ./.git/objects/b9/5104720826b5d3b2fee4c01f3874805764d71f
+--> ./.git/objects/21
+--> ./.git/objects/21/0117466ac38ee2c5be74ec2ca75ea4788f57d6
+--> ./.git/objects/21/05b8b5177578d9f1d6ec05376623192dbc1b97
+--> ./.git/objects/0f
+--> ./.git/objects/0f/cec83ab9a732d35bf0fc7796046148ec6dc1c4
+--> ./.git/objects/3a
+--> ./.git/objects/3a/03084ca2a375dc5c718326af85ab558690b28f
+--> ./.git/objects/06
+--> ./.git/objects/06/16489937f56324f52d9423cbe33b57354bf01a
+--> ./.git/objects/1d
+--> ./.git/objects/1d/936e40575f72d2b1e568a28b42d258b159552c
+--> ./.git/objects/81
+--> ./.git/objects/81/8e7ecdc1842c444fe3f3082c9d342b5ea32fa4
+--> ./.git/objects/e0
+--> ./.git/objects/e0/f17f4c7d6e32dc7c6fb3111ba91b98b41d24be
+--> ./.git/objects/8d
+--> ./.git/objects/8d/1967fe7bbf214f27dac4431a15158136146b0e
+--> ./.git/objects/8d/d919909a5210ea8be55ec48c3b19ec1795dccc
+--> ./.git/objects/b2
+--> ./.git/objects/b2/235f7fe0ef88e95d4902f51eb57a060bdbee9e
+--> ./.git/objects/96
+--> ./.git/objects/96/6c0e8200c4fd522b10ed04b8fb840f8f2de6cf
+--> ./.git/objects/62
+--> ./.git/objects/62/037a91ba9ae87dc60e3d15a9e0396eb331280e
+--> ./.git/objects/5a
+--> ./.git/objects/5a/c584266730b3aa4d6c6898e461381c166299ba
+--> ./.git/objects/bb
+--> ./.git/objects/bb/17fdb391ca6292552203164970edf85a6c83bc
+--> ./.git/objects/d9
+--> ./.git/objects/d9/126bbf43b5e73472e6976b4ec98301385be962
+--> ./.git/objects/68
+--> ./.git/objects/68/50e7575b13fd9864aba5d65ede9821a8eb8267
+--> ./.git/objects/1b
+--> ./.git/objects/1b/5989b9fab3934da46f6d9c13e5fe3f30c12bd6
+--> ./.git/objects/47
+--> ./.git/objects/47/add76af6c85de4e03cd573f167741f646bf54b
+--> ./.git/objects/d1
+--> ./.git/objects/d1/faf50c260238e3c81cbf0c806394021db433f9
+--> ./.git/objects/08
+--> ./.git/objects/08/010b1a9b260916e6913f3c5928a2565e00a1e6
+--> ./.git/objects/5f
+--> ./.git/objects/5f/47dcd7b21601909d8de39fff2fa46b0b00a8ed
+--> ./.git/objects/1a
+--> ./.git/objects/1a/103206d8b2518f3e367e3d2f362e53da157ea4
+--> ./.git/objects/72
+--> ./.git/objects/72/053052ca4f0c06f6a6af8bc87b4f3584a96380
+--> ./.git/objects/3f
+--> ./.git/objects/3f/3dcce7a6c5c701ec034968bd513b5d5a18f132
+--> ./.git/objects/f5
+--> ./.git/objects/f5/aaf5666acad3dd75ee52a764faa9ca2db82c51
+--> ./.git/objects/91
+--> ./.git/objects/91/6e3f0783eae39df36ad26173bcc543925ccc3e
+--> ./.git/objects/49
+--> ./.git/objects/49/260e81ff22dda6ac29c9f902d73132e68e2972
+--> ./.git/objects/99
+--> ./.git/objects/99/1428caf9d1eaa07779f26cec060e8628cf74f1
+--> ./.git/objects/f2
+--> ./.git/objects/f2/5b6116a3a8b8226a04050798ec263b895351a7
+--> ./.git/objects/61
+--> ./.git/objects/61/31ee8bdf4eeb288a306bdaeb4f8d21b489ea66
+--> ./.git/objects/0c
+--> ./.git/objects/0c/a732f5b61a898161721cf6134622aea27cb8da
+--> ./.git/objects/23
+--> ./.git/objects/23/056bf933d7fa23524c36f7a56857b4503f9d5f
+--> ./.git/objects/d2
+--> ./.git/objects/d2/539cdba9eda4be45e3d3516365a7ce21ef1d2d
+--> ./.git/packed-refs
+--> ./.git/logs
+--> ./.git/logs/refs
+--> ./.git/logs/refs/remotes
+--> ./.git/logs/refs/remotes/origin
+--> ./.git/logs/refs/remotes/origin/HEAD
+--> ./.git/logs/refs/remotes/origin/arch_calculon
+--> ./.git/logs/refs/heads
+--> ./.git/logs/refs/heads/arch_calculon
+--> ./.git/logs/refs/stash
+--> ./.git/logs/HEAD
+--> ./.git/HEAD
+--> ./.git/config
+--> ./.git/index
+--> ./.git/FETCH_HEAD
+--> ./.git/ORIG_HEAD
+--> ./.git/.gitstatus.aHcOKl
+--> ./.git/.gitstatus.aHcOKl/a
+--> ./.git/.gitstatus.aHcOKl/b
+--> ./.gitattributes
+--> ./README.md
+--> ./arch_install.sh
+--> ./dotdirs
+--> ./dotdirs/applications
+--> ./dotdirs/applications/alacritty.desktop
+--> ./dotdirs/applications/chromium.desktop
+--> ./dotdirs/applications/filezilla.desktop
+--> ./dotdirs/applications/firefox.desktop
+--> ./dotdirs/applications/htop.desktop
+--> ./dotdirs/applications/lf.desktop
+--> ./dotdirs/applications/nvim.desktop
+--> ./dotdirs/applications/org.keepassxc.KeePassXC.desktop
+--> ./dotdirs/applications/org.regolith-linux.remontoire.desktop
+--> ./dotdirs/config
+--> ./dotdirs/config/alacritty
+--> ./dotdirs/config/alacritty/alacritty.yml
+--> ./dotdirs/config/bash
+--> ./dotdirs/config/bash/bash_logout
+--> ./dotdirs/config/bash/bash_profile
+--> ./dotdirs/config/bash/bashrc
+--> ./dotdirs/config/pictures
+--> ./dotdirs/config/pictures/locked.jpg
+--> ./dotdirs/config/shell
+--> ./dotdirs/config/shell/variables
+--> ./dotdirs/config/sway
+--> ./dotdirs/config/sway/config
+--> ./dotdirs/config/sway/sway.d
+--> ./dotdirs/config/sway/sway.d/01_general.conf
+--> ./dotdirs/config/sway/sway.d/02_output.conf
+--> ./dotdirs/config/sway/sway.d/03_idle.conf
+--> ./dotdirs/config/sway/sway.d/04_input.conf
+--> ./dotdirs/config/sway/sway.d/05_hotkeys.conf
+--> ./dotdirs/config/sway/sway.d/06_visuals.conf
+--> ./dotdirs/config/sway/sway.d/07_floating.conf
+--> ./dotdirs/config/sway/sway.d/08_autostart.conf
+--> ./dotdirs/config/systemd
+--> ./dotdirs/config/systemd/user
+--> ./dotdirs/config/systemd/user/sway-session.target
+--> ./dotdirs/config/systemd/user/sway.service
+--> ./dotdirs/config/systemd/user/swayidle.service
+--> ./dotdirs/config/systemd/user/waybar.service
+--> ./dotdirs/config/waybar
+--> ./dotdirs/config/waybar/config
+--> ./dotdirs/config/waybar/style.css
+--> ./dotdirs/scripts
+--> ./dotdirs/scripts/bemenu-run.sh
+--> ./dotdirs/scripts/lock.sh
+--> ./dotdirs/scripts/remontoire
+--> ./dotdirs/scripts/toggle-program.sh
+--> ./dotfiles
+--> ./dotfiles/alacritty
+--> ./dotfiles/alacritty/alacritty.yml
+--> ./dotfiles/dunst
+--> ./dotfiles/dunst/dunstrc
+--> ./dotfiles/gtk
+--> ./dotfiles/gtk/.Xresources
+--> ./dotfiles/gtk/.gtkrc-2.0
+--> ./dotfiles/gtk/.icons
+--> ./dotfiles/gtk/.icons/default
+--> ./dotfiles/gtk/.icons/default/index.theme
+--> ./dotfiles/gtk/gtk-3.0
+--> ./dotfiles/gtk/gtk-3.0/settings.ini
+--> ./dotfiles/hypr
+--> ./dotfiles/hypr/conf
+--> ./dotfiles/hypr/conf/animations1.conf
+--> ./dotfiles/hypr/conf/animations2.conf
+--> ./dotfiles/hypr/conf/autostart.conf
+--> ./dotfiles/hypr/conf/decoration.conf
+--> ./dotfiles/hypr/conf/environment.conf
+--> ./dotfiles/hypr/conf/keybindings.conf
+bind = $mainMod CTRL, W, exec, ~/Workspace/git/github/arch_install/dotfiles/scripts/wallpaper-swww.sh
+--> ./dotfiles/hypr/conf/keyboard.conf
+--> ./dotfiles/hypr/conf/layouts.conf
+--> ./dotfiles/hypr/conf/misc.conf
+--> ./dotfiles/hypr/conf/window.conf
+--> ./dotfiles/hypr/conf/windowrules.conf
+--> ./dotfiles/hypr/gtk.sh
+--> ./dotfiles/hypr/hyprland.conf
+--> ./dotfiles/hypr/starthypr.sh
+--> ./dotfiles/login
+--> ./dotfiles/login/issue
+--> ./dotfiles/nixos
+--> ./dotfiles/nixos/configuration.nix
+--> ./dotfiles/nvim
+--> ./dotfiles/nvim/init.vim
+--> ./dotfiles/picom
+--> ./dotfiles/picom/picom.conf
+--> ./dotfiles/polybar
+--> ./dotfiles/polybar/config.ini
+--> ./dotfiles/polybar/launch.sh
+--> ./dotfiles/qtile
+--> ./dotfiles/qtile/.xinitrc
+--> ./dotfiles/qtile/autostart.sh
+# Setup Wallpaper and update colors
+--> ./dotfiles/qtile/config.py
+    Key([mod, "shift"], "w", lazy.spawn(home + "/Workspace/git/github/arch_install/dotfiles/scripts/updatewal.sh"), desc="Update Theme and Wallpaper"),
+    Key([mod, "control"], "w", lazy.spawn(home + "/Workspace/git/github/arch_install/dotfiles/scripts/wallpaper.sh"), desc="Select Theme and Wallpaper"),
+--> ./dotfiles/ranger
+--> ./dotfiles/ranger/commands.py
+--> ./dotfiles/ranger/commands_full.py
+--> ./dotfiles/ranger/rc.conf
+--> ./dotfiles/ranger/rifle.conf
+label wallpaper, number 11, mime ^image, has feh, X = feh --bg-scale "$1"
+label wallpaper, number 12, mime ^image, has feh, X = feh --bg-tile "$1"
+label wallpaper, number 13, mime ^image, has feh, X = feh --bg-center "$1"
+label wallpaper, number 14, mime ^image, has feh, X = feh --bg-fill "$1"
+--> ./dotfiles/ranger/scope.sh
+--> ./dotfiles/remontoire
+--> ./dotfiles/remontoire/style.css
+--> ./dotfiles/rofi
+--> ./dotfiles/rofi/config-cliphist.rasi
+    background-image:             url("~/.cache/current_wallpaper.jpg", height);
+--> ./dotfiles/rofi/config-power.rasi
+    background-image:             url("~/.cache/current_wallpaper.jpg", height);
+--> ./dotfiles/rofi/config-screenshot.rasi
+    background-image:             url("~/.cache/current_wallpaper.jpg", height);
+--> ./dotfiles/rofi/config-short.rasi
+    background-image:             url("~/.cache/current_wallpaper.jpg", height);
+--> ./dotfiles/rofi/config-wallpaper.rasi
+    background-image:             url("~/.cache/current_wallpaper.jpg", height);
+--> ./dotfiles/rofi/config.rasi
+    background-image:             url("~/.cache/current_wallpaper.jpg", height);
+--> ./dotfiles/scripts
+--> ./dotfiles/scripts/applauncher.sh
+--> ./dotfiles/scripts/autolock.sh
+xautolock -time 10 -locker "swaylock -i ~/.cache/current_wallpaper.jpg" -notify 30 -notifier "notify-send 'Screen will be locked soon.' 'Locking screen in 30 seconds'"
+--> ./dotfiles/scripts/bravebookmarks.sh
+--> ./dotfiles/scripts/calculator.sh
+--> ./dotfiles/scripts/checkplatform.sh
+--> ./dotfiles/scripts/cleanup.sh
+--> ./dotfiles/scripts/cliphist.sh
+--> ./dotfiles/scripts/figlet.sh
+--> ./dotfiles/scripts/filemanager.sh
+--> ./dotfiles/scripts/fontsearch.sh
+--> ./dotfiles/scripts/grim.sh
+--> ./dotfiles/scripts/growthrate.py
+--> ./dotfiles/scripts/installupdates.sh
+--> ./dotfiles/scripts/launchvm.sh
+--> ./dotfiles/scripts/library.sh
+--> ./dotfiles/scripts/lockscreentime.sh
+--> ./dotfiles/scripts/looking-glass.sh
+--> ./dotfiles/scripts/onedrive.sh
+--> ./dotfiles/scripts/powermenu-hypr.sh
+--> ./dotfiles/scripts/powermenu.sh
+--> ./dotfiles/scripts/scrot.sh
+--> ./dotfiles/scripts/snapshot.sh
+--> ./dotfiles/scripts/templates.sh
+--> ./dotfiles/scripts/updates.sh
+--> ./dotfiles/scripts/updatewal-swww.sh
+# Select random wallpaper and create color scheme
+wal -q -i ~/wallpaper/
+# Copy selected wallpaper into .cache folder
+cp $wallpaper ~/.cache/current_wallpaper.jpg
+# get wallpaper iamge name
+newwall=$(echo $wallpaper | sed "s|$HOME/wallpaper/||g")
+# Set the new wallpaper
+swww img $wallpaper \
+notify-send "Colors and Wallpaper updated" "with image $newwall"
+--> ./dotfiles/scripts/updatewal.sh
+# Update Wallpaper with pywal
+wal -q -i ~/wallpaper/
+newwall=$(echo $wallpaper | sed "s|$HOME/wallpaper/||g")
+# Copy selected wallpaper into .cache folder
+cp $wallpaper ~/.cache/current_wallpaper.jpg
+notify-send "Colors and Wallpaper updated" "with image $newwall"
+--> ./dotfiles/scripts/wal.sh
+wal -q -i ~/wallpaper/ 
+--> ./dotfiles/scripts/wallpaper-swww.sh
+# Select wallpaper
+selected=$(ls -1 ~/wallpaper | grep "jpg" | rofi -dmenu -config ~/Workspace/git/github/arch_install/dotfiles/rofi/config-wallpaper.rasi -p "Wallpapers")
+    # Update wallpaper with pywal
+    wal -q -i ~/wallpaper/$selected
+    # Copy selected wallpaper into .cache folder
+    cp $wallpaper ~/.cache/current_wallpaper.jpg   
+    newwall=$(echo $wallpaper | sed "s|$HOME/wallpaper/||g")
+    # Set the new wallpaper
+    swww img $wallpaper \
+    notify-send "Colors and Wallpaper updated" "with image $newwall"
+--> ./dotfiles/scripts/wallpaper.sh
+# Select wallpaper
+selected=$(ls -1 ~/wallpaper | grep "jpg" | rofi -dmenu -config ~/Workspace/git/github/arch_install/dotfiles/rofi/config-wallpaper.rasi -p "Wallpapers")
+    # Update wallpaper with pywal
+    wal -q -i ~/wallpaper/$selected
+    newwall=$(echo $wallpaper | sed "s|$HOME/wallpaper/||g")
+    # Copy selected wallpaper into .cache folder
+    cp $wallpaper ~/.cache/current_wallpaper.jpg
+    notify-send "Colors and Wallpaper updated" "with image $newwall"
+--> ./dotfiles/shell
+--> ./dotfiles/shell/aliases
+--> ./dotfiles/shell/bash
+--> ./dotfiles/shell/bash/.bashrc
+--> ./dotfiles/shell/bash/bash_logout
+--> ./dotfiles/shell/bash/bash_profile
+--> ./dotfiles/shell/zsh
+--> ./dotfiles/shell/zsh/p10k.zsh
+--> ./dotfiles/shell/zsh/zshrc
+--> ./dotfiles/starship
+--> ./dotfiles/starship/starship.toml
+--> ./dotfiles/swappy
+--> ./dotfiles/swappy/config
+--> ./dotfiles/swaylock
+--> ./dotfiles/swaylock/config
+# Add current screenshot as wallpaper
+# In my setup the current wallpaper (requires wallpaper scripts in /scripts)
+image=~/.cache/current_wallpaper.jpg
+--> ./dotfiles/vim
+--> ./dotfiles/vim/.vimrc
+--> ./dotfiles/wal
+--> ./dotfiles/wal/templates
+--> ./dotfiles/wal/templates/colors-hyprland.conf
+--> ./dotfiles/wal/templates/colors-rofi-pywal.rasi
+--> ./dotfiles/wal/templates/colors-waybar.css
+--> ./dotfiles/wal/templates/colors-wlogout.css
+--> ./dotfiles/wal/colorschemes
+--> ./dotfiles/wal/colorschemes/light
+--> ./dotfiles/wal/colorschemes/dark
+--> ./dotfiles/wallpapers
+--> ./dotfiles/wallpapers/smoke.jpg
+--> ./dotfiles/waybar
+--> ./dotfiles/waybar/config
+        "custom/wallpaper",
+--> ./dotfiles/waybar/launch.sh
+--> ./dotfiles/waybar/modules.json
+    // Wallpaper
+    "custom/wallpaper": {
+        "on-click-right": "~/Workspace/git/github/arch_install/dotfiles/scripts/wallpaper-swww.sh",
+--> ./dotfiles/waybar/myconfig
+        "custom/wallpaper",
+--> ./dotfiles/waybar/style.css
+#custom-brave, #custom-outlook, #custom-filemanager, #custom-teams, #custom-chatgpt, #custom-calculator, #custom-windowsvm, #custom-cliphist, #custom-wallpaper {
+#custom-wallpaper {
+--> ./dotfiles/wlogout
+--> ./dotfiles/wlogout/icons
+--> ./dotfiles/wlogout/icons/hibernate.png
+--> ./dotfiles/wlogout/icons/lock.png
+--> ./dotfiles/wlogout/icons/logout.png
+--> ./dotfiles/wlogout/icons/reboot.png
+--> ./dotfiles/wlogout/icons/shutdown.png
+--> ./dotfiles/wlogout/icons/suspend.png
+--> ./dotfiles/wlogout/layout
+--> ./dotfiles/wlogout/noise.png
+--> ./dotfiles/wlogout/style.css
+--> ./etc
+--> ./etc/NetworkManager
+--> ./etc/NetworkManager/conf.d
+--> ./etc/NetworkManager/conf.d/dns-servers.conf
+--> ./etc/hostname
+--> ./etc/locale.conf
+--> ./etc/systemd
+--> ./etc/systemd/network
+--> ./etc/systemd/network/20-ethernet.network
+--> ./etc/systemd/network/20-wlan.network
+--> ./etc/systemd/network/20-wwan.network
+--> ./etc/vconsole.conf
+--> ./playbooks
+--> ./playbooks/ansible.cfg
+--> ./playbooks/configure.yml
+--> ./playbooks/enable.yml
+--> ./playbooks/install.yml
+--> ./playbooks/install_hyperv.yml
+--> ./playbooks/prerequisites.yml
+--> ./plugins
+--> ./plugins/modules
+--> ./plugins/modules/aur.py
+--> ./vars
+--> ./vars/main.yml
+--> ./2-install-hyprland.sh
+--> ./2-install-qtile.sh
+--> ./3-dotfiles.sh
+--> ./1-install.sh
+# Install wallpapers
+echo "-> Install wallpapers"
+    read -p "Do you want to clone the wallpapers? (Yy/Nn): " yn
+            if [ -d ~/Workspace/wallpapers/ ]; then
+                echo "wallpaper folder already exists."
+                mkdir ~/Workspace/wallpapers/
+                cp -r ${WORKSPACE_GIT}/wallpapers/* ~/Workspace/wallpapers/
+                echo "wallpapers installed."
+            if [ -d ~/Workspace/wallpapers/ ]; then
+                echo "wallpapers folder already exists."
+                mkdir ~/Workspace/wallpapers
+wal -i ${WORKSPACE_GIT}/wallpapers/default.jpg
+--> ./nico.txt
