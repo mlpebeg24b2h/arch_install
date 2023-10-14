@@ -120,6 +120,8 @@ packagesYay=(
     "bibata-cursor-theme"
     "trizen"
     "kora-icon-theme"
+    "1password"
+    "qsync"
 );
   
 # ------------------------------------------------------
@@ -160,7 +162,7 @@ _installSymLink .bash_profile ~/.bash_profile ${WORKSPACE_GIT}/arch_install/dotf
 echo ""
 echo "-> Install zsh files"
 
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${WORKSPACE_TMP}/powerlevel10k
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.config/powerlevel10k
 _installSymLink .zshrc ~/.zshrc ${WORKSPACE_GIT}/arch_install/dotfiles/shell/zsh/zshrc ~/.zshrc
 _installSymLink .p10k.zsh ~/.p10k.zsh ${WORKSPACE_GIT}/arch_install/dotfiles/shell/zsh/p10k.zsh ~/.p10k.zsh
 
@@ -195,7 +197,7 @@ _installSymLink wallpapers ~/Workspace/wallpapers ${WORKSPACE_GIT}/arch_install/
 # ------------------------------------------------------
 echo ""
 echo "-> Init pywal"
-wal -i ${WORKSPACE_GIT}/arch_install/dotfiles/default.jpg
+wal -i ${WORKSPACE_GIT}/arch_install/dotfiles/wallpapers/default.jpg
 echo "pywal initiated."
 
 # ------------------------------------------------------
