@@ -15,7 +15,7 @@
 # ------------------------------------------------------
 WORKSPACE_GIT=~/Workspace/git/github
 WORKSPACE_TMP=~/Workspace/tmp
-source $(dirname "$0")/scripts/library.sh
+source ${WORKSPACE_GIT}/arch_install/dotfiles/scripts/library.sh
 clear
 echo "  ___           _        _ _  "
 echo " |_ _|_ __  ___| |_ __ _| | | "
@@ -141,7 +141,7 @@ clear
 echo ""
 echo "-> Install .bashrc"
 
-_installSymLink .bashrc ~/.bashrc ~/dotfiles/.bashrc ~/.bashrc
+_installSymLink .bashrc ~/.bashrc ${WORKSPACE_GIT}/arch_install/dotfiles/.bashrc ~/.bashrc
 
 # ------------------------------------------------------
 # Install custom issue (login prompt)
@@ -152,7 +152,7 @@ while true; do
     read -p "Do you want to install the custom login prompt? (Yy/Nn): " yn
     case $yn in
         [Yy]* )
-            sudo cp ~/dotfiles/login/issue /etc/issue
+            sudo cp ${WORKSPACE_GIT}/arch_install/dotfiles/login/issue /etc/issue
             echo "Login prompt installed."
         break;;
         [Nn]* ) 
