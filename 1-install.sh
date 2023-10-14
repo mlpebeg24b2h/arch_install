@@ -15,7 +15,8 @@
 # ------------------------------------------------------
 WORKSPACE_GIT=~/Workspace/git/github
 WORKSPACE_TMP=~/Workspace/tmp
-source ${WORKSPACE_GIT}/arch_install/dotfiles/scripts/library.sh
+WORKSPACE_DOTFILES=${WORKSPACE_GIT}/arch_install/
+source ${WORKSPACE_DOTFILES}/dotfiles/scripts/library.sh
 clear
 echo "  ___           _        _ _  "
 echo " |_ _|_ __  ___| |_ __ _| | | "
