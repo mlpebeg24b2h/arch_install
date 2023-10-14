@@ -569,14 +569,14 @@ max_cr=0
 if [ ${skip_to} -le 22 ] ; then
    echo "Press enter when ready"
    read input
-   cp -r /tmp/arch_install /mnt/home/nicolas/Workspace/git/github && chown -R nicolas /mnt/home/nicolas/Workspace/git/github/arch_install 2> ${error_log}
+   cp -r /tmp/arch_install /mnt/home/nicolas/Workspace/git/github 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-  arch-chroot /mnt 'chown -R nicolas /mnt/home/nicolas/Workspace/git/github/arch_install' 2> ${error_log}
+  arch-chroot /mnt chown -R nicolas /mnt/home/nicolas/Workspace/git/github/arch_install 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
