@@ -4,32 +4,54 @@ wipe_old_partitions="true"
 step_log=/mnt/tmp/step.log
 error_log=/tmp/error.log
 skip_to=0
+if [ -n "$1" ] ; then
+   incr=$1
+else
+   incr=0
+fi
 
 echo "################# BEGIN installation script for cyclopia #################"
 
-printf "STEP 01 - Wipe all partitions..."
-if [ ${skip_to} -le 1 ] ; then
+echo "!!!!!!!!!! DON'T FORGET TO CHECK DISKS BEFORE INSTALLATION !!!!!!!!!!"
+echo "Do you want to exit ?"
+read input
+if [ "$input" == "y" ] ; then
+   exit
+fi
+
+export disk="/dev/sda"
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Wipe all partitions..."
+echo "Press enter when ready"
+read input
+if [ "${skip_to}" -le "${incr}" ] ; then
    if [ "${wipe_old_partitions}" == "true" ] ; then
       max_cr=0
-      for i in $(parted -s /dev/sda print | awk '/^ / {print $1}') ; do
-         parted -s /dev/sda rm $i 2> ${error_log}
-         rc=$?
-         if [ $rc -gt ${max_cr} ] ; then
-            echo "KO !"
-            echo "ERROR : $(cat ${error_log})"
-            exit
-         fi
-      done
-   
-      #for i in $(parted -s /dev/sdb print | awk '/^ / {print $1}') ; do
-      #   parted -s /dev/sdb rm $i 2> ${error_log}
-      #   rc=$?
-      #   if [ $rc -gt ${max_cr} ] ; then
-      #      echo "KO !"
-      #      echo "ERROR : $(cat ${error_log})"
-      #      exit
-      #   fi
-      #done
+      echo "wipefs $disk"
+      wipefs -af $disk 2> ${error_log}
+      rc=$?
+      if [ $rc -gt ${max_cr} ] ; then
+         echo "KO !"
+         echo "ERROR : $(cat ${error_log})"
+         exit
+      fi
+      echo "clear $disk"
+      sgdisk --zap-all --clear $disk 2> ${error_log}
+      rc=$?
+      if [ $rc -gt ${max_cr} ] ; then
+         echo "KO !"
+         echo "ERROR : $(cat ${error_log})"
+         exit
+      fi
+      echo "partprobe $disk"
+      partprobe $disk 2> ${error_log}
+      rc=$?
+      if [ $rc -gt ${max_cr} ] ; then
+         echo "KO !"
+         echo "ERROR : $(cat ${error_log})"
+         exit
+      fi
       echo "OK"
    else
       echo "skipped"
@@ -38,36 +60,38 @@ else
    echo "skipped"
 fi
 
-printf "STEP 02 - Create all partitions..."
-if [ ${skip_to} -le 2 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Create all partitions..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
    echo "==> creation of EFI partition"
-   parted -s /dev/sda mklabel gpt mkpart '"EFI system partition"' 'fat32' '1MiB' '1GiB' 2> ${error_log}
+   sgdisk -n 0:0:+1GiB -t 0:ef00 -c 0:esp $disk 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   #parted -s /dev/sda set 1 esp on 2> ${error_log}
-   #rc=$?
-   #if [ $rc -gt ${max_cr} ] ; then
-   #   echo "KO !"
-   #   echo "ERROR : $(cat ${error_log})"
-   #   exit
-   #fi
-   echo "==> creation of root partition"
-   parted -s /dev/sda mkpart "root" xfs '1GiB' '101GiB' 2> ${error_log}
+   echo "==> creation of main partition"
+   sgdisk -n 0:0:0 -t 0:8309 -c 0:luks $disk 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   echo "==> creation of home partition"
-   parted -s /dev/sda mkpart "home" xfs '101GiB' 100% 2> ${error_log}
+   echo "==> partprobe"
+   partprobe $disk 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> print the new partition table"
+   sgdisk -p $disk 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -79,21 +103,14 @@ else
    echo "skipped"
 fi
 
-printf "STEP 03 - Crypt all partitions..."
-if [ ${skip_to} -le 3 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Crypt all partitions..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
-   echo "==> crypt root partition"
-   cryptsetup -y -v luksFormat /dev/sda2 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   echo "==> crypt home partition"
-   cryptsetup -y -v luksFormat /dev/sda3 2> ${error_log}
+   echo "==> crypt main partition"
+   cryptsetup -y -v luksFormat ${disk}2 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -105,21 +122,14 @@ else
    echo "skipped"
 fi
 
-printf "STEP 04 - Open all crypted partitions..."
-if [ ${skip_to} -le 4 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Open all crypted partitions..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
-   echo "==> open root crypted partition"
-   cryptsetup open /dev/sda2 root 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   echo "==> open home crypted partition"
-   cryptsetup open /dev/sda3 home 2> ${error_log}
+   echo "==> open main crypted partition"
+   cryptsetup open ${disk}2 root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -131,13 +141,14 @@ else
    echo "skipped"
 fi
 
-printf "STEP 05 - Create all File systems..."
-if [ ${skip_to} -le 5 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Create all File systems..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
    echo "==> creation of EFI FS"
-   mkfs.fat -F 32 /dev/sda1 2> ${error_log}
+   mkfs.vfat -F32 -n ESP ${disk}1 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -145,15 +156,7 @@ if [ ${skip_to} -le 5 ] ; then
       exit
    fi
    echo "==> creation of root FS"
-   mkfs.xfs /dev/mapper/root -f 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   echo "==> creation of home FS"
-   mkfs.xfs /dev/mapper/home -f 2> ${error_log}
+   mkfs.btrfs -L archlinux /dev/mapper/root -f 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -165,7 +168,8 @@ else
    echo "skipped"
 fi
 
-printf "STEP 06 - Mount all File systems..."
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Mount all File systems..."
 echo "Press enter when ready"
 read input
 max_cr=0
@@ -177,33 +181,186 @@ if [ $rc -gt ${max_cr} ] ; then
    echo "ERROR : $(cat ${error_log})"
    exit
 fi
-echo "==> mount EFI partition"
-mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
-rc=$?
-if [ $rc -gt ${max_cr} ] ; then
-   echo "KO !"
-   echo "ERROR : $(cat ${error_log})"
-   exit
-fi
-echo "==> mount home partition"
-mount --mkdir /dev/mapper/home /mnt/home 2> ${error_log}
-rc=$?
-if [ $rc -gt ${max_cr} ] ; then
-   echo "KO !"
-   echo "ERROR : $(cat ${error_log})"
-   exit
-fi
+#echo "==> mount EFI partition"
+#mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
+#rc=$?
+#if [ $rc -gt ${max_cr} ] ; then
+#   echo "KO !"
+#   echo "ERROR : $(cat ${error_log})"
+#   exit
+#fi
 echo "OK"
 echo "check FS : "
 df -k | grep mnt
 echo "Press enter when ready"
 read input
 
-printf "STEP 07 - Install software packages (might take a long time)..."
-if [ ${skip_to} -le 7 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Create BTRFS subvolumes..."
+max_cr=0
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   pacstrap -K /mnt base base-devel linux linux-firmware openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
+   btrfs subvolume create /mnt/@home 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   btrfs subvolume create /mnt/@snapshots 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   btrfs subvolume create /mnt/@cache 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   btrfs subvolume create /mnt/@libvirt 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   btrfs subvolume create /mnt/@log 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   btrfs subvolume create /mnt/@tmp 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Mount the BTRFS subvolumes..."
+max_cr=0
+if [ "${skip_to}" -le "${incr}" ] ; then
+   echo "Press enter when ready"
+   read input
+   echo "==> umount the root partition"
+   umount /mnt 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> set mount options for the subvolumes"
+   export sv_opts="rw,noatime,compress-force=zstd:1,space_cache=v2"
+   echo "==> Mount the new BTRFS root subvolume"
+   mount -o ${sv_opts},subvol=@ /dev/mapper/root /mnt 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> create mountpoints for the additional subvolumes"
+   mkdir -p /mnt/{home,.snapshots,var/cache,var/lib/libvirt,var/log,var/tmp} 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount home subvolume"
+   mount -o ${sv_opts},subvol=@home /dev/mapper/root /mnt/home 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount snapshot subvolume"
+   mount -o ${sv_opts},subvol=@snapshots /dev/mapper/root /mnt/.snapshots 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount cache subvolume"
+   mount -o ${sv_opts},subvol=@cache /dev/mapper/root /mnt/var/cache 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount libvirt subvolume"
+   mount -o ${sv_opts},subvol=@libvirt /dev/mapper/root /mnt/var/lib/libvirt 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount log subvolume"
+   mount -o ${sv_opts},subvol=@log /dev/mapper/root /mnt/var/log 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount tmp subvolume"
+   mount -o ${sv_opts},subvol=@tmp /dev/mapper/root /mnt/var/tmp 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> create ESP mount point"
+   mkdir /mnt/efi 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> mount ESP partition"
+   mount ${disk}1 /mnt/efi 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+#### ADD : 
+# grep vendor_id /proc/cpuinfo
+# export microcode="intel-ucode"
+# pacstrap ${microcode}
+####
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Install software packages (might take a long time)..."
+if [ "${skip_to}" -le "${incr}" ] ; then
+   echo "Press enter when ready"
+   read input
+   pacstrap -K /mnt base base-devel btrfs-progs linux linux-firmware cryptsetup openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -215,11 +372,12 @@ else
    echo "skipped"
 fi
 
-printf "STEP 08 - Generate fstab..."
-if [ ${skip_to} -le 8 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Generate fstab..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   genfstab -U /mnt >> /mnt/etc/fstab 2> ${error_log}
+   genfstab -U -p /mnt >> /mnt/etc/fstab 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -231,8 +389,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 09 - Generate local time zone..."
-if [ ${skip_to} -le 9 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Generate local time zone..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime 2> ${error_log}
@@ -247,8 +406,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 10 - Set the system time..."
-if [ ${skip_to} -le 10 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Set the system time..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt hwclock --systohc 2> ${error_log}
@@ -263,8 +423,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 11 - Generate locales..."
-if [ ${skip_to} -le 11 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Generate locales..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
@@ -301,8 +462,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 12 - Generate keyboard mappings..."
-if [ ${skip_to} -le 12 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Generate keyboard mappings..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    cp ./etc/vconsole.conf /mnt/etc/vconsole.conf 2> ${error_log}
@@ -317,8 +479,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 13 - Generate hostname..."
-if [ ${skip_to} -le 13 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Generate hostname..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    cp ./etc/hostname /mnt/etc/hostname 2> ${error_log}
@@ -333,8 +496,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 14 - Configure Networking..."
-if [ ${skip_to} -le 14 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Configure Networking..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
@@ -375,66 +539,31 @@ else
    echo "skipped"
 fi
 
-printf "STEP 15 - Configure GRUB..."
-if [ ${skip_to} -le 15 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - keyfile..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
-   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   echo "==> create keyfile"
+   arch-chroot /mnt dd bs=512 count=4 iflag=fullblock if=/dev/random of=/crypto_keyfile.bin 2> ${error_log}
    rc=$?
-   echo "==> configure mkinitcpio file"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   max_cr=1
-   arch-chroot /mnt mkinitcpio -P
+   echo "==> change keyfile permissions"
+   chmod 600 /mnt/crypto_keyfile.bin 2> ${error_log}
    rc=$?
-   echo "==> launch mkinitcpio reconfiguration"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
-   max_cr=0
-   arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
+   echo "==> add this keyfile to luks"
+   arch-chroot /mnt cryptsetup luksAddKey ${disk}2 /crypto_keyfile.bin 2> ${error_log}
    rc=$?
-   echo "==> install grub binaries"
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
-   UUID_HOME=$(blkid|grep sda3|awk '{print $2}'|sed 's/"//g')
-   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=\/dev\/mapper\/root\"/g" /mnt/etc/default/grub 2> ${error_log}
-   rc=$?
-   echo "==> configure GRUB file"
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB 2> ${error_log}
-   rc=$?
-   echo "==> install GRUB on system"
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg 2> ${error_log}
-   rc=$?
-   echo "==> configure GRUB on system"
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      exit
-   fi
-   echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
-   rc=$?
-   echo "==> configure crypttab file"
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
@@ -445,8 +574,129 @@ else
    echo "skipped"
 fi
 
-printf "STEP 16 - Change root passwd..."
-if [ ${skip_to} -le 16 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - mkinitcpio..."
+if [ "${skip_to}" -le "${incr}" ] ; then
+   echo "Press enter when ready"
+   read input
+   max_cr=0
+   echo "==> add the keyfile"
+   echo "FILES=(/crypto_keyfile.bin)" >> /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> add btrfs support"
+   echo "MODULES=(btrfs)" >> /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> set hooks"
+   sed -i 's/HOOKS=.*/HOOKS=(base udev keyboard autodetect keymap consolefont modconf kms block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   max_cr=1
+   arch-chroot /mnt mkinitcpio -P
+   rc=$?
+   echo "==> recreate the initramfs image"
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - GRUB..."
+if [ "${skip_to}" -le "${incr}" ] ; then
+   echo "Press enter when ready"
+   read input
+   max_cr=0
+   arch-chroot /mnt pacman -S grub efibootmgr 2> ${error_log}
+   rc=$?
+   echo "==> install grub binaries"
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
+   echo "==> configure GRUB file"
+   sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=\/dev\/mapper\/root\"/g" /mnt/etc/default/grub 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> include the luks module"
+   sed -i "s/GRUB_PRELOAD_MODULES=\"\(.*\)\"/GRUB_PRELOAD_MODULES=\"\1 luks\"/g" /mnt/etc/default/grub 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> enable crypto disk"
+   sed -i "s/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g" /mnt/etc/default/grub 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB 2> ${error_log}
+   rc=$?
+   echo "==> install GRUB on system"
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> verify that a GRUB entry has been added to the UEFI bootloader by running : efibootmgr"
+   arch-chroot /mnt efibootmgr
+   echo "Press enter when ready"
+   read input
+   arch-chroot /mnt grub-mkconfig -o /efi/grub/grub.cfg 2> ${error_log}
+   rc=$?
+   echo "==> configure GRUB on system"
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
+   echo "==> verify that grub.cfg has entries for insmod cryptodisk and insmod luks by running : grep 'cryptodisk\|luks' /efi/grub/grub.cfg"
+   grep 'cryptodisk\|luks' /mnt/efi/grub/grub.cfg
+   echo "Press enter when ready"
+   read input
+   #echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
+   #rc=$?
+   #echo "==> configure crypttab file"
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   exit
+   #fi
+   echo "OK"
+else
+   echo "skipped"
+fi
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Change root passwd..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt passwd root
@@ -461,8 +711,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 17 - Create user..."
-if [ ${skip_to} -le 17 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Create user..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt useradd -d /home/nicolas -m -s /bin/bash -G wheel nicolas
@@ -477,8 +728,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 18 - Change user passwd for nicolas..."
-if [ ${skip_to} -le 18 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Change user passwd for nicolas..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt passwd nicolas
@@ -493,9 +745,10 @@ else
    echo "skipped"
 fi
 
-printf "STEP 19 - Enable and configure NetworkManager and SSH services..."
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Enable and configure NetworkManager and SSH services..."
 max_cr=0
-if [ ${skip_to} -le 19 ] ; then
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt systemctl enable NetworkManager 2> ${error_log}
@@ -518,8 +771,9 @@ else
    echo "skipped"
 fi
 
-printf "STEP 20 - Configure sudo..."
-if [ ${skip_to} -le 20 ] ; then
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Configure sudo..."
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    sed -i 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /mnt/etc/sudoers 2> ${error_log}
@@ -534,9 +788,10 @@ else
    echo "skipped"
 fi
 
-printf "STEP 21 - Create and configure xdg user dirs..."
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Create and configure xdg user dirs..."
 max_cr=0
-if [ ${skip_to} -le 21 ] ; then
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt su -c 'xdg-user-dirs-update' nicolas 2> ${error_log}
@@ -564,9 +819,11 @@ if [ ${skip_to} -le 21 ] ; then
 else
    echo "skipped"
 fi
-printf "STEP 22 - Copy current dir to arch linux..."
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Copy current dir to arch linux..."
 max_cr=0
-if [ ${skip_to} -le 22 ] ; then
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    cp -r /tmp/arch_install /mnt/home/nicolas/Workspace/git/github 2> ${error_log}
@@ -585,12 +842,14 @@ if [ ${skip_to} -le 22 ] ; then
    fi
    echo "OK"
 fi
-printf "STEP 23 - Umount everything..."
+
+incr=$(expr $incr + 1)
+printf "STEP ${incr} - Umount everything..."
 max_cr=0
-if [ ${skip_to} -le 23 ] ; then
+if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   umount -f /mnt/home && umount -f /mnt/boot && umount -f /mnt 2> ${error_log}
+   umount -R /mnt 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -601,4 +860,6 @@ if [ ${skip_to} -le 23 ] ; then
 fi
 
 echo "################# END installation script for cyclopia #################"
+echo ""
+echo "Important: In this early stage of boot GRUB is using the us keyboard, not any alternative keymap that might be set in vconsole.conf."
 
