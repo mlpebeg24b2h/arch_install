@@ -142,7 +142,7 @@ clear
 echo ""
 echo "-> Install .bashrc"
 
-_installSymLink .bashrc ~/.bashrc ${WORKSPACE_GIT}/arch_install/dotfiles/.bashrc ~/.bashrc
+_installSymLink .bashrc ~/.bashrc ${WORKSPACE_GIT}/arch_install/dotfiles/shell/bash/.bashrc ~/.bashrc
 
 # ------------------------------------------------------
 # Install custom issue (login prompt)
