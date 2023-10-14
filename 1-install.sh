@@ -110,6 +110,7 @@ packagesPacman=(
     "nautilus"
     "htop"
     "zsh"
+    "dos2unix"
 );
 
 packagesYay=(
