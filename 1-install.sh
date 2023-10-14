@@ -111,6 +111,7 @@ packagesPacman=(
     "htop"
     "zsh"
     "dos2unix"
+    "lsd"
 );
 
 packagesYay=(
