@@ -576,6 +576,13 @@ if [ ${skip_to} -le 21 ] ; then
       echo "ERROR : $(cat ${error_log})"
       exit
    fi
+  arch-chroot /mnt 'chown -R nicolas /mnt/home/nicolas/Workspace/git/github/arch_install' 2> ${error_log}
+   rc=$?
+   if [ $rc -gt ${max_cr} ] ; then
+      echo "KO !"
+      echo "ERROR : $(cat ${error_log})"
+      exit
+   fi
    echo "OK"
 fi
 printf "STEP 23 - Umount everything..."
