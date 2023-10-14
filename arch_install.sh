@@ -170,7 +170,7 @@ echo "Press enter when ready"
 read input
 max_cr=0
 echo "==> mount root partition"
-mount /dev/sda1 /mnt 2> ${error_log}
+mount /dev/mapper/root /mnt 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
@@ -186,7 +186,7 @@ if [ $rc -gt ${max_cr} ] ; then
    exit
 fi
 echo "==> mount home partition"
-mount --mkdir /dev/sda2 /mnt/home 2> ${error_log}
+mount --mkdir /dev/mapper/home /mnt/home 2> ${error_log}
 rc=$?
 if [ $rc -gt ${max_cr} ] ; then
    echo "KO !"
