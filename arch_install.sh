@@ -352,6 +352,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "OK"
+   df -h | grep mnt
 else
    echo "skipped"
 fi
@@ -367,7 +368,7 @@ printf "STEP ${incr} - Install software packages (might take a long time)..."
 if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   pacstrap -K /mnt base base-devel btrfs-progs linux linux-firmware cryptsetup openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
+   pacstrap -K /mnt base base-devel btrfs-progs intel-ucode linux linux-firmware cryptsetup openssh iproute2 networkmanager python git vim sudo xdg-user-dirs 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
