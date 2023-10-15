@@ -678,7 +678,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    arch-chroot /mnt efibootmgr
    echo "Press enter when ready"
    read input
-   arch-chroot /mnt grub-mkconfig -o /efi/grub/grub.cfg 2> ${error_log}
+   arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg 2> ${error_log}
    rc=$?
    echo "==> configure GRUB on system"
    if [ $rc -gt ${max_cr} ] ; then
@@ -689,7 +689,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    echo "==> verify that grub.cfg has entries for insmod cryptodisk and insmod luks by running : grep 'cryptodisk\|luks' /efi/grub/grub.cfg"
    echo "Press enter when ready"
    read input
-   grep 'cryptodisk\|luks' /mnt/efi/grub/grub.cfg
+   grep 'cryptodisk\|luks' /mnt/boot/grub/grub.cfg
    rc=$?
    echo "==> configure GRUB on system"
    if [ $rc -gt ${max_cr} ] ; then
