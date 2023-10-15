@@ -67,7 +67,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> creation of EFI partition"
-   sgdisk -n 0:0:+1GiB -t 0:ef00 -c 0:esp $disk 2> ${error_log}
+   sgdisk -n 0:0:+2GiB -t 0:ef00 -c 0:esp $disk 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -181,14 +181,6 @@ if [ $rc -gt ${max_cr} ] ; then
    echo "ERROR : $(cat ${error_log})"
    echo "STEP ${incr}" && exit
 fi
-#echo "==> mount EFI partition"
-#mount --mkdir /dev/sda1 /mnt/boot 2> ${error_log}
-#rc=$?
-#if [ $rc -gt ${max_cr} ] ; then
-#   echo "KO !"
-#   echo "ERROR : $(cat ${error_log})"
-#   echo "STEP ${incr}" && exit
-#fi
 echo "OK"
 echo "check FS : "
 df -k | grep mnt
@@ -336,7 +328,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> create ESP mount point"
-   mkdir /mnt/efi 2> ${error_log}
+   mkdir /mnt/boot 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -344,7 +336,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> mount ESP partition"
-   mount ${disk}1 /mnt/efi 2> ${error_log}
+   mount ${disk}1 /mnt/boot 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -547,40 +539,40 @@ else
    echo "skipped"
 fi
 
-incr=$(expr $incr + 1)
-printf "STEP ${incr} - keyfile..."
-if [ "${skip_to}" -le "${incr}" ] ; then
-   echo "Press enter when ready"
-   read input
-   max_cr=0
-   echo "==> create keyfile"
-   arch-chroot /mnt dd bs=512 count=4 iflag=fullblock if=/dev/random of=/crypto_keyfile.bin 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
-   echo "==> change keyfile permissions"
-   chmod 600 /mnt/crypto_keyfile.bin 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
-   echo "==> add this keyfile to luks"
-   arch-chroot /mnt cryptsetup luksAddKey ${disk}2 /crypto_keyfile.bin 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
-   echo "OK"
-else
-   echo "skipped"
-fi
+#incr=$(expr $incr + 1)
+#printf "STEP ${incr} - keyfile..."
+#if [ "${skip_to}" -le "${incr}" ] ; then
+#   echo "Press enter when ready"
+#   read input
+#   max_cr=0
+#   echo "==> create keyfile"
+#   arch-chroot /mnt dd bs=512 count=4 iflag=fullblock if=/dev/random of=/crypto_keyfile.bin 2> ${error_log}
+#   rc=$?
+#   if [ $rc -gt ${max_cr} ] ; then
+#      echo "KO !"
+#      echo "ERROR : $(cat ${error_log})"
+#      echo "STEP ${incr}" && exit
+#   fi
+#   echo "==> change keyfile permissions"
+#   chmod 600 /mnt/crypto_keyfile.bin 2> ${error_log}
+#   rc=$?
+#   if [ $rc -gt ${max_cr} ] ; then
+#      echo "KO !"
+#      echo "ERROR : $(cat ${error_log})"
+#      echo "STEP ${incr}" && exit
+#   fi
+#   echo "==> add this keyfile to luks"
+#   arch-chroot /mnt cryptsetup luksAddKey ${disk}2 /crypto_keyfile.bin 2> ${error_log}
+#   rc=$?
+#   if [ $rc -gt ${max_cr} ] ; then
+#      echo "KO !"
+#      echo "ERROR : $(cat ${error_log})"
+#      echo "STEP ${incr}" && exit
+#   fi
+#   echo "OK"
+#else
+#   echo "skipped"
+#fi
 
 incr=$(expr $incr + 1)
 printf "STEP ${incr} - mkinitcpio..."
@@ -588,14 +580,14 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    max_cr=0
-   echo "==> add the keyfile"
-   echo "FILES=(/crypto_keyfile.bin)" >> /mnt/etc/mkinitcpio.conf 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
+   #echo "==> add the keyfile"
+   #echo "FILES=(/crypto_keyfile.bin)" >> /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   #rc=$?
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   echo "STEP ${incr}" && exit
+   #fi
    echo "==> add btrfs support"
    echo "MODULES=(btrfs)" >> /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
@@ -605,7 +597,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> set hooks"
-   sed -i 's/HOOKS=.*/HOOKS=(base udev keyboard autodetect keymap consolefont modconf kms block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
+   sed -i 's/HOOKS=.*/HOOKS=(base udev autodetect modconf kms keyboard keymap consolefont block encrypt filesystems fsck)/g' /mnt/etc/mkinitcpio.conf 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -649,26 +641,26 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-   echo "==> include the luks module"
-   sed -i "s/GRUB_PRELOAD_MODULES=\"\(.*\)\"/GRUB_PRELOAD_MODULES=\"\1 luks\"/g" /mnt/etc/default/grub 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
-   echo "==> enable crypto disk"
-   sed -i "s/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g" /mnt/etc/default/grub 2> ${error_log}
-   rc=$?
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
+   #echo "==> include the luks module"
+   #sed -i "s/GRUB_PRELOAD_MODULES=\"\(.*\)\"/GRUB_PRELOAD_MODULES=\"\1 luks\"/g" /mnt/etc/default/grub 2> ${error_log}
+   #rc=$?
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   echo "STEP ${incr}" && exit
+   #fi
+   #echo "==> enable crypto disk"
+   #sed -i "s/#GRUB_ENABLE_CRYPTODISK=y/GRUB_ENABLE_CRYPTODISK=y/g" /mnt/etc/default/grub 2> ${error_log}
+   #rc=$?
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   echo "STEP ${incr}" && exit
+   #fi
    echo "==> install GRUB on system"
    echo "Press enter when ready"
    read input
-   arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB 2> ${error_log}
+   arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -687,17 +679,17 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-   echo "==> verify that grub.cfg has entries for insmod cryptodisk and insmod luks by running : grep 'cryptodisk\|luks' /efi/grub/grub.cfg"
-   echo "Press enter when ready"
-   read input
-   grep 'cryptodisk\|luks' /mnt/boot/grub/grub.cfg
-   rc=$?
-   echo "==> configure GRUB on system"
-   if [ $rc -gt ${max_cr} ] ; then
-      echo "KO !"
-      echo "ERROR : $(cat ${error_log})"
-      echo "STEP ${incr}" && exit
-   fi
+   #echo "==> verify that grub.cfg has entries for insmod cryptodisk and insmod luks by running : grep 'cryptodisk\|luks' /efi/grub/grub.cfg"
+   #echo "Press enter when ready"
+   #read input
+   #grep 'cryptodisk\|luks' /mnt/boot/grub/grub.cfg
+   #rc=$?
+   #echo "==> configure GRUB on system"
+   #if [ $rc -gt ${max_cr} ] ; then
+   #   echo "KO !"
+   #   echo "ERROR : $(cat ${error_log})"
+   #   echo "STEP ${incr}" && exit
+   #fi
    #echo "home         ${UUID_HOME}        none    timeout=180" >> /mnt/etc/crypttab
    #rc=$?
    #echo "==> configure crypttab file"
