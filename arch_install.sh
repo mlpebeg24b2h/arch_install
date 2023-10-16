@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wipe_old_partitions="true"
+wipe_old_partitions="false"
 step_log=/mnt/tmp/step.log
 error_log=/tmp/error.log
 incr=0
