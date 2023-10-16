@@ -19,7 +19,7 @@ if [ "$input" == "y" ] ; then
    exit
 fi
 
-export disk="/dev/sda"
+export disk="/dev/nvme1n1"
 
 incr=$(expr $incr + 1)
 printf "STEP ${incr} - Wipe all partitions..."
@@ -110,7 +110,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> crypt main partition"
-   cryptsetup -y -v luksFormat ${disk}2 2> ${error_log}
+   cryptsetup -y -v luksFormat ${disk}p2 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
