@@ -129,7 +129,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> open main crypted partition"
-   cryptsetup open ${disk}2 root 2> ${error_log}
+   cryptsetup open ${disk}p2 root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -148,7 +148,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> creation of EFI FS"
-   mkfs.vfat -F32 -n ESP ${disk}1 2> ${error_log}
+   mkfs.vfat -F32 -n ESP ${disk}p1 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -336,7 +336,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> mount ESP partition"
-   mount ${disk}1 /mnt/boot 2> ${error_log}
+   mount ${disk}p1 /mnt/boot 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -632,7 +632,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-   UUID_ROOT=$(blkid|grep sda2|awk '{print $2}'|sed 's/"//g')
+   UUID_ROOT=$(blkid|grep nvme1n1p2|awk '{print $2}'|sed 's/"//g')
    echo "==> configure GRUB file"
    sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=\/dev\/mapper\/root\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
