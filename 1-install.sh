@@ -122,6 +122,8 @@ packagesYay=(
     "kora-icon-theme"
     "1password"
     "qsync"
+    "wev"
+    "brightnessctl"
 );
   
 # ------------------------------------------------------
