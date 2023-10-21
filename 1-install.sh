@@ -124,6 +124,8 @@ packagesYay=(
     "qsync"
     "wev"
     "brightnessctl"
+    "duplicati-beta-bin"
+    "rclone"
 );
   
 # ------------------------------------------------------
