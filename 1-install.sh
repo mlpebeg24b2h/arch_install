@@ -112,6 +112,8 @@ packagesPacman=(
     "zsh"
     "dos2unix"
     "lsd"
+    "timeshift"
+    "neofetch"
 );
 
 packagesYay=(
@@ -126,6 +128,8 @@ packagesYay=(
     "brightnessctl"
     "duplicati-beta-bin"
     "rclone"
+    "1password-cli"
+    "flameshot-git"
 );
   
 # ------------------------------------------------------

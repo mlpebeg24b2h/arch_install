@@ -138,7 +138,7 @@
     // Windows VM
     "custom/windowsvm": {
         "format": "",
-        "on-click": "~/private/launchvm.sh",
+        "on-click": "~/Workspace/git/github/arch_install/dotfiles/scripts/launchvm.sh",
         "tooltip": false
     },
 
