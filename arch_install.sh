@@ -661,6 +661,8 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
    arch-chroot /mnt grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB 2> ${error_log}
+   #############################
+   # if error : EFI variables are not supported on this system add --removable to the previous command
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
