@@ -10,7 +10,7 @@ else
    skip_to=0
 fi
 
-echo "################# BEGIN installation script for cyclopia #################"
+echo "################# BEGIN installation script for test #################"
 
 echo "!!!!!!!!!! DON'T FORGET TO CHECK DISKS BEFORE INSTALLATION !!!!!!!!!!"
 echo "Do you want to exit ?"
@@ -19,7 +19,7 @@ if [ "$input" == "y" ] ; then
    exit
 fi
 
-export disk="/dev/nvme1n1"
+export disk="/dev/vda"
 
 incr=$(expr $incr + 1)
 printf "STEP ${incr} - Wipe all partitions..."
@@ -110,7 +110,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> crypt main partition"
-   cryptsetup -y -v luksFormat ${disk}p2 2> ${error_log}
+   cryptsetup -y -v luksFormat ${disk}2 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -129,7 +129,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> open main crypted partition"
-   cryptsetup open ${disk}p2 root 2> ${error_log}
+   cryptsetup open ${disk}2 root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -148,7 +148,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> creation of EFI FS"
-   mkfs.vfat -F32 -n ESP ${disk}p1 2> ${error_log}
+   mkfs.vfat -F32 -n ESP ${disk}1 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -336,7 +336,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> mount ESP partition"
-   mount ${disk}p1 /mnt/boot 2> ${error_log}
+   mount ${disk}1 /mnt/boot 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
