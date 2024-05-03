@@ -12,6 +12,7 @@ fi
 
 echo "################# BEGIN installation script for cyclopia #################"
 
+echo "!!!!!!!!!! DON'T FORGET TO CHECK LINE 635 !!!!!!!!!!"
 echo "!!!!!!!!!! DON'T FORGET TO CHECK DISKS BEFORE INSTALLATION !!!!!!!!!!"
 echo "Do you want to exit ?"
 read input
