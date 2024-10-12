@@ -1,0 +1,121 @@
+---
+
+hypervisor_installation: true
+hypervisor: "hyperv"
+
+prerequisites_dirs:
+- "/home/nicolas/.ansible"
+- "/home/nicolas/.local"
+- "/home/nicolas/.local/share"
+- "/home/nicolas/.local/share/fonts"
+- "/home/nicolas/.local/bin"
+- "/home/nicolas/.local/bin/scripts"
+- "/home/nicolas/.config/shell"
+- "/home/nicolas/.config/systemd"
+
+fonts:
+- name: "ComicShannsMono"
+  url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.1/ComicShannsMono.tar.xz"
+  archive: "ComicShannsMono.tar.xz"
+
+pacman_packages:
+- fontconfig
+- alacritty
+- jq
+- zsh
+- zsh-completions
+- lsd
+- sway
+- swaylock
+- swayidle
+- swaybg
+- bemenu-wayland
+- j4-dmenu-desktop
+- waybar
+- otf-font-awesome
+- meson
+- vala
+- libgee
+- firefox
+- filezilla
+- chromium
+- tmux
+- lf
+- neovim
+- keepassxc
+- htop
+# for yay
+- fakeroot
+- make
+
+aur_packages:
+- autotiling
+
+source_dotdirs_files: "/home/nicolas/Workspace/arch_install/dotdirs"
+
+configuration_files:
+- software: "bash"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/bash/bashrc"
+    dest: "/home/nicolas/.bashrc"
+  - src: "{{ source_dotdirs_files }}/config/bash/bash_profile"
+    dest: "/home/nicolas/.bash_profile"
+  - src: "{{ source_dotdirs_files }}/config/bash/bash_logout"
+    dest: "/home/nicolas/.bash_logout"
+- software: "alacritty"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/alacritty"
+    dest: "/home/nicolas/.config/alacritty"
+- software: "zsh"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/zsh/zshrc"
+    dest: "/home/nicolas/.zshrc"
+  - src: "{{ source_dotdirs_files }}/config/zsh/p10k.zsh"
+    dest: "/home/nicolas/.p10k.zsh"
+- software: "pictures"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/pictures/locked.jpg"
+    dest: "/home/nicolas/Pictures/locked.jpg"
+  - src: "{{ source_dotdirs_files }}/config/pictures/smoke.jpg"
+    dest: "/home/nicolas/Pictures/smoke.jpg"
+- software: "sway"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/sway"
+    dest: "/home/nicolas/.config/sway"
+- software: "shell"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/shell/aliases"
+    dest: "/home/nicolas/.config/shell/aliases"
+  - src: "{{ source_dotdirs_files }}/config/shell/variables"
+    dest: "/home/nicolas/.config/shell/variables"
+- software: "binaries"
+  files:
+  - src: "{{ source_dotdirs_files }}/scripts/bemenu-run.sh"
+    dest: "/home/nicolas/.local/bin/scripts/bemenu-run.sh"
+  - src: "{{ source_dotdirs_files }}/scripts/lock.sh"
+    dest: "/home/nicolas/.local/bin/scripts/lock.sh"
+  - src: "{{ source_dotdirs_files }}/scripts/toggle-program.sh"
+    dest: "/home/nicolas/.local/bin/scripts/toggle-program.sh"
+  - src: "{{ source_dotdirs_files }}/scripts/remontoire"
+    dest: "/home/nicolas/.local/bin/remontoire"
+- software: "systemd"
+  files:
+  - src: "{{ source_dotdirs_files }}/config/systemd/user/sway.service"
+    dest: "/home/nicolas/.config/systemd/user/sway.service"
+  - src: "{{ source_dotdirs_files }}/config/systemd/user/sway-session.target"
+    dest: "/home/nicolas/.config/systemd/user/sway-session.target"
+  - src: "{{ source_dotdirs_files }}/config/systemd/user/swayidle.service"
+    dest: "/home/nicolas/.config/systemd/user/swayidle.service"
+  - src: "{{ source_dotdirs_files }}/config/systemd/user/waybar.service"
+    dest: "/home/nicolas/.config/systemd/user/waybar.service"
+- software: "applications"
+  files:
+  - src: "{{ source_dotdirs_files }}/applications"
+    dest: "/home/nicolas/.local/share/applications"
+
+user_services:
+- "sway"
+- "swayidle"
+- "waybar"
+
+...

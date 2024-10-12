@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=FTP->filezilla
+GenericName=FTP client
+GenericName[fr]=Client FTP
+Comment=Download and upload files via FTP, FTPS and SFTP
+Comment[fr]=Transférer des fichiers via FTP, FTPS et SFTP
+Exec=filezilla
+Terminal=false
+Icon=filezilla
+Type=Application
+Categories=Network;FileTransfer;
+Version=1.0

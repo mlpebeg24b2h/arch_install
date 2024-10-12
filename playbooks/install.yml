@@ -1,0 +1,112 @@
+---
+
+- name: "[arch_install/install] Install Desktop Environment"
+  hosts: localhost
+  connection: local
+  vars_files:
+  - ../vars/main.yml
+  tasks:
+  - name: "[arch_install/install] : update all packages"
+    community.general.pacman:
+      update_cache: true
+      upgrade: true
+    become: true
+
+  - name: "[arch_install/install] : install all required packages"
+    community.general.pacman:
+      name: "{{ pacman_package }}"
+      state: present
+    loop: "{{ pacman_packages }}"
+    loop_control:
+      loop_var: pacman_package
+    become: true
+    vars:
+      mitogen_task_isolation: fork
+
+  - name: "[arch_install/install] : installing yay from aur"
+    aur:
+      name:
+        - yay
+      state: present
+      use: makepkg
+
+  - name: "[arch_install/install] : install AUR packages"
+    aur:
+      name: "{{ aur_package }}"
+      state: present
+      use: yay
+    loop: "{{ aur_packages }}"
+    loop_control:
+      loop_var: aur_package
+    become_user: aur_builder
+    vars:
+      mitogen_task_isolation: fork
+
+  - name: "[arch_install/install] : Check remontoire git path"
+    ansible.builtin.stat:
+      path: "/home/nicolas/Workspace/tmp/remontoire"
+    register: remontoire_git_path
+
+  - name: "[arch_install/install] : Check remontoire build path"
+    ansible.builtin.stat:
+      path: "/home/nicolas/Workspace/tmp/remontoire/build"
+    register: remontoire_build_path
+
+  - name: "[arch_install/install] : Clone remontoire"
+    ansible.builtin.git:
+      repo: "https://github.com/mlpebeg24b2h/remontoire.git"
+      clone: true
+      dest: "/home/nicolas/Workspace/tmp/remontoire"
+    when: (not remontoire_git_path.stat.exists)
+
+  - name: "[arch_install/install] : install remontoire package - part 1"
+    ansible.builtin.shell: meson build
+    args:
+      chdir: "/home/nicolas/Workspace/tmp/remontoire"
+      executable: /bin/bash
+    when: (not remontoire_git_path.stat.exists)
+
+  - name: "[arch_install/install] : install remontoire package - part 2"
+    ansible.builtin.shell: ninja install 
+    args:
+      chdir: "/home/nicolas/Workspace/tmp/remontoire/build"
+      executable: /bin/bash
+    become: true
+    when: (not remontoire_build_path.stat.exists)
+
+  - name: "[arch_install/install] : install hypervisor client"
+    ansible.builtin.include_tasks: "install_{{ hypervisor }}.yml"
+    when: hypervisor_installation
+
+  - name: "[arch_install/install] : download fonts"
+    ansible.builtin.uri:
+      url: "{{ font.url }}"
+      dest: "/home/nicolas/Workspace/tmp/{{ font.archive }}"
+      remote_src: true
+    loop: "{{ fonts }}"
+    loop_control:
+      loop_var: font
+  
+  - name: "[arch_install/install] : unarchive fonts"
+    ansible.builtin.unarchive:
+      src: "/home/nicolas/Workspace/tmp/{{ font.archive }}"
+      dest: /home/nicolas/.local/share/fonts
+      remote_src: true
+    loop: "{{ fonts }}"
+    loop_control:
+      loop_var: font
+
+  - name: "[arch_install/install] : create fonts cache"
+    ansible.builtin.command: fc-cache
+
+  - name: "[arch_install/install] : match available fonts"
+    ansible.builtin.command: fc-match
+
+  - name: "[arch_install/install] : remove fonts zip download"
+    ansible.builtin.file:
+      path: "/home/nicolas/Workspace/tmp/{{ font.archive }}"
+      state: absent
+    loop: "{{ fonts }}"
+    loop_control:
+      loop_var: font
+

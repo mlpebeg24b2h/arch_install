@@ -1,0 +1,44 @@
+---
+
+- name: "[arch_install/configure] Configure Desktop Environment"
+  hosts: localhost
+  connection: local
+  vars_files:
+  - ../vars/main.yml
+  tasks:
+  #- name: "[arch_install/configure] : test sub-elements"
+  #  debug:
+  #    msg: '"{{ item.0.software}}" : "{{ item.1.src }}"  -> "{{ item.1.dest }}"'
+  #  loop: "{{ configuration_files | subelements('files') }}"
+  - name: "[arch_install/configure] : deploy configuration files"
+    ansible.builtin.file:
+      src: "{{ item.1.src }}"
+      dest: "{{ item.1.dest }}"
+      force: true
+      state: link
+    loop: "{{ configuration_files | subelements('files') }}"
+
+  - name: "[arch_install/configure] : backup system-wide desktop entries"
+    ansible.builtin.copy:
+      src: "{{ application_dir }}"
+      dest: /home/nicolas/Workspace/backup/system-wide-desktop-entries
+      remote_src: yes
+      force: true
+    ignore_errors: true
+    loop:
+      - /usr/share/applications/
+      - /usr/local/share/applications/
+    loop_control:
+      loop_var: application_dir
+
+  - name: "[arch_install/configure] : remove default application entries"
+    ansible.builtin.file:
+      path: "{{ application_dir }}"
+      state: absent
+    ignore_errors: true
+    loop:
+    - /usr/share/applications/
+    - /usr/local/share/applications/
+    loop_control:
+      loop_var: application_dir
+    become: true

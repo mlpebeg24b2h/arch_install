@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Utilities->htop
+GenericName=Process Viewer
+GenericName[fr]=Visualiseur de processus
+Comment=Show System Processes
+Comment[fr]=Affiche les processus système
+Icon=htop
+Exec=htop
+Terminal=true
+Categories=System;Monitor;ConsoleOnly;
+Keywords=system;process;task
