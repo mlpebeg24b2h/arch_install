@@ -53,7 +53,7 @@ if [[ "${DEVICE_NAME}" =~ ^nvme.* ]] ; then
 else
   disk="/dev/${DEVICE_NAME}"
 fi
-echo "disk set to: ${device_partition_name}"
+echo "disk set to: ${disk}"
 
 echo "If everything is correct, press y, otherwise press any key:"
 read input_start
