@@ -12,15 +12,57 @@ fi
 
 echo "################# BEGIN installation script for cyclopia #################"
 
-echo "!!!!!!!!!! DON'T FORGET TO CHECK LINE 635 !!!!!!!!!!"
-echo "!!!!!!!!!! DON'T FORGET TO CHECK DISKS BEFORE INSTALLATION !!!!!!!!!!"
+#echo "!!!!!!!!!! DON'T FORGET TO CHECK LINE 635 !!!!!!!!!!"
+#echo "!!!!!!!!!! DON'T FORGET TO CHECK DISKS BEFORE INSTALLATION !!!!!!!!!!"
 echo "Do you want to exit ?"
 read input
 if [ "$input" == "y" ] ; then
    exit
 fi
 
-export disk="/dev/nvme1n1"
+#export disk="/dev/nvme1n1"
+
+echo "Please answer some questions for this installation --> "
+echo "-------------------------------------------------------"
+echo "Do you want to remove the old partitions? (y/n)"
+read wipe_question
+case ${wipe_question} in
+  "y")
+    wipe_old_partitions="true"
+    echo "wipe_old_partitions set to: TRUE"
+    ;;
+  "n")
+    wipe_old_partitions="false"
+    echo "wipe_old_partitions set to: FALSE"
+    ;;
+  *)
+    echo "incorrect answer, exit..."
+    exit 10
+esac
+
+echo "Specify the hostname of the machine (including FQDN): "
+read HOSTNAME
+
+echo "The following devices were found on this system: "
+lsblk
+echo ""
+echo "Specify the device name (sda, vda, nvme1n1, ...) for this installation: "
+read DEVICE_NAME
+if [[ "${DEVICE_NAME}" =~ ^nvme.* ]] ; then
+  disk="/dev/${DEVICE_NAME}p"
+else
+  disk="/dev/${DEVICE_NAME}"
+fi
+echo "disk set to: ${device_partition_name}"
+
+echo "If everything is correct, press y, otherwise press any key:"
+read input_start
+if [[ "${input_start}" == "y" ]] ; then
+  echo "LET'S BEGIN!"
+else
+  echo "Exiting..."
+  exit 20
+fi
 
 incr=$(expr $incr + 1)
 printf "STEP ${incr} - Wipe all partitions..."
@@ -111,7 +153,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> crypt main partition"
-   cryptsetup -y -v luksFormat ${disk}p2 2> ${error_log}
+   cryptsetup -y -v luksFormat ${disk}2 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -130,7 +172,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> open main crypted partition"
-   cryptsetup open ${disk}p2 root 2> ${error_log}
+   cryptsetup open ${disk}2 root 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -149,7 +191,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> creation of EFI FS"
-   mkfs.vfat -F32 -n ESP ${disk}p1 2> ${error_log}
+   mkfs.vfat -F32 -n ESP ${disk}1 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -337,7 +379,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> mount ESP partition"
-   mount ${disk}p1 /mnt/boot 2> ${error_log}
+   mount ${disk}1 /mnt/boot 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -485,7 +527,8 @@ printf "STEP ${incr} - Generate hostname..."
 if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   cp ./etc/hostname /mnt/etc/hostname 2> ${error_log}
+   #cp ./etc/hostname /mnt/etc/hostname 2> ${error_log}
+   echo ${HOSTNAME} > /mnt/etc/hostname 2> ${error_log}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -633,7 +676,16 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-   UUID_ROOT=$(blkid|grep nvme1n1p2|awk '{print $2}'|sed 's/"//g')
+   UUID_ROOT=$(blkid|grep ${disk}2|awk '{print $2}'|sed 's/"//g')
+   echo "ATTENTION!!! Please review the value found fot UUID_ROOT: "
+   echo "UUID_ROOT = ${UUID_ROOT} ; if it seems OK, press y, otherwise the script will exit: "
+   read input_uuid
+   if [[ "${input_uuid}" == "y" ]] ; then
+     echo "OK, continue"
+    else
+      echo "Exiting..."
+      exit 30
+   fi
    echo "==> configure GRUB file"
    sed -i "s/GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"/GRUB_CMDLINE_LINUX_DEFAULT=\"\1 fsck.mode=skip cryptdevice=${UUID_ROOT}:root root=\/dev\/mapper\/root\"/g" /mnt/etc/default/grub 2> ${error_log}
    rc=$?
