@@ -55,6 +55,9 @@ else
 fi
 echo "disk set to: ${disk}"
 
+echo "Which user name would you like to add : "
+read USERNAME
+
 echo "If everything is correct, press y, otherwise press any key:"
 read input_start
 if [[ "${input_start}" == "y" ]] ; then
@@ -778,7 +781,7 @@ printf "STEP ${incr} - Create user..."
 if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   arch-chroot /mnt useradd -d /home/nicolas -m -s /bin/bash -G wheel nicolas
+   arch-chroot /mnt useradd -d /home/${USERNAME} -m -s /bin/bash -G wheel ${USERNAME}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -791,11 +794,11 @@ else
 fi
 
 incr=$(expr $incr + 1)
-printf "STEP ${incr} - Change user passwd for nicolas..."
+printf "STEP ${incr} - Change user passwd for ${USERNAME}..."
 if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   arch-chroot /mnt passwd nicolas
+   arch-chroot /mnt passwd ${USERNAME}
    rc=$?
    if [ $rc -gt 0 ] ; then
       echo "KO !"
@@ -856,21 +859,21 @@ max_cr=0
 if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   arch-chroot /mnt su -c 'xdg-user-dirs-update' nicolas 2> ${error_log}
+   arch-chroot /mnt su -c 'xdg-user-dirs-update' ${USERNAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-   arch-chroot /mnt su -c 'systemctl enable xdg-user-dirs-update --user' nicolas 2> ${error_log}
+   arch-chroot /mnt su -c 'systemctl enable xdg-user-dirs-update --user' ${USERNAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-   arch-chroot /mnt su -c 'mkdir -p ~/Workspace/tmp && mkdir -p ~/Workspace/backup/system-wide-desktop-entries && mkdir ~/Venv && mkdir -p ~/Workspace/git/github' nicolas 2> ${error_log}
+   arch-chroot /mnt su -c 'mkdir -p ~/Workspace/tmp && mkdir -p ~/Workspace/backup/system-wide-desktop-entries && mkdir ~/Venv && mkdir -p ~/Workspace/git/github' ${USERNAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -888,14 +891,14 @@ max_cr=0
 if [ "${skip_to}" -le "${incr}" ] ; then
    echo "Press enter when ready"
    read input
-   cp -r /tmp/arch_install /mnt/home/nicolas/Workspace/git/github 2> ${error_log}
+   cp -r /tmp/arch_install /mnt/home/${USERNAME}/Workspace/git/github 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
       echo "ERROR : $(cat ${error_log})"
       echo "STEP ${incr}" && exit
    fi
-  arch-chroot /mnt chown -R nicolas /home/nicolas/Workspace/git/github/arch_install 2> ${error_log}
+  arch-chroot /mnt chown -R ${USERNAME} /home/${USERNAME}/Workspace/git/github/arch_install 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
