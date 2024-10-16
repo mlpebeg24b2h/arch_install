@@ -74,7 +74,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    if [ "${wipe_old_partitions}" == "true" ] ; then
       max_cr=0
-      echo "wipefs $disk"
+      echo "wipefs /dev/${DEVICE_NAME}"
       wipefs -af $disk 2> ${error_log}
       rc=$?
       if [ $rc -gt ${max_cr} ] ; then
@@ -82,7 +82,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
          echo "ERROR : $(cat ${error_log})"
          echo "STEP ${incr}" && exit
       fi
-      echo "clear $disk"
+      echo "clear /dev/${DEVICE_NAME}"
       sgdisk --zap-all --clear $disk 2> ${error_log}
       rc=$?
       if [ $rc -gt ${max_cr} ] ; then
@@ -90,7 +90,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
          echo "ERROR : $(cat ${error_log})"
          echo "STEP ${incr}" && exit
       fi
-      echo "partprobe $disk"
+      echo "partprobe /dev/${DEVICE_NAME}"
       partprobe $disk 2> ${error_log}
       rc=$?
       if [ $rc -gt ${max_cr} ] ; then
