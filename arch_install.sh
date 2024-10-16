@@ -113,7 +113,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
    read input
    max_cr=0
    echo "==> creation of EFI partition"
-   sgdisk -n 0:0:+2GiB -t 0:ef00 -c 0:esp $disk 2> ${error_log}
+   sgdisk -n 0:0:+2GiB -t 0:ef00 -c 0:esp /dev/${DEVICE_NAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -121,7 +121,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> creation of main partition"
-   sgdisk -n 0:0:0 -t 0:8309 -c 0:luks $disk 2> ${error_log}
+   sgdisk -n 0:0:0 -t 0:8309 -c 0:luks /dev/${DEVICE_NAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -129,7 +129,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> partprobe"
-   partprobe $disk 2> ${error_log}
+   partprobe /dev/${DEVICE_NAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
@@ -137,7 +137,7 @@ if [ "${skip_to}" -le "${incr}" ] ; then
       echo "STEP ${incr}" && exit
    fi
    echo "==> print the new partition table"
-   sgdisk -p $disk 2> ${error_log}
+   sgdisk -p /dev/${DEVICE_NAME} 2> ${error_log}
    rc=$?
    if [ $rc -gt ${max_cr} ] ; then
       echo "KO !"
